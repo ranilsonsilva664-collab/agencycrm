@@ -9,8 +9,8 @@ import {
   isOverdue, getDaysUntilDeadline, generateId,
 } from '../utils/helpers';
 import { Project, ServiceType, ProjectStatus, FileUpload } from '../types';
-import { PROJECT_STATUS_LABELS, SERVICE_LABELS, SERVICE_COLORS } from '../types';
-import { mockProjects, mockClients } from '../data/mockData';
+import { PROJECT_STATUS_LABELS, SERVICE_LABELS, SERVICE_COLORS, Client } from '../types';
+import { useFirestore } from '../hooks/useFirestore';
 import { Modal } from '../components/Modal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
@@ -33,7 +33,8 @@ const emptyProject = (): Omit<Project, 'id' | 'createdAt' | 'profit'> => ({
 });
 
 export function Projects() {
-  const [projects, setProjects] = useState<Project[]>(mockProjects);
+  const { data: projects, loading, addDocument, updateDocument, deleteDocument } = useFirestore<Project>('projects');
+  const { data: clients } = useFirestore<Client>('clients');
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -86,35 +87,41 @@ export function Projects() {
 
   function setField<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     if (key === 'clientId') {
-      const client = mockClients.find((c) => c.id === String(value));
+      const client = clients.find((c) => c.id === String(value));
       setForm((prev) => ({ ...prev, clientId: String(value), clientName: client?.name || '' }));
     } else {
       setForm((prev) => ({ ...prev, [key]: value }));
     }
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!form.name.trim()) { error('Nome do projeto é obrigatório.'); return; }
     if (!form.deadline) { error('Informe o prazo de entrega.'); return; }
     const profit = form.value - form.cost;
 
-    if (editingProject) {
-      setProjects((prev) => prev.map((p) =>
-        p.id === editingProject.id ? { ...editingProject, ...form, profit } : p
-      ));
-      success('Projeto atualizado!');
-    } else {
-      const newProject: Project = { id: generateId(), createdAt: new Date().toISOString(), ...form, profit };
-      setProjects((prev) => [newProject, ...prev]);
-      success('Projeto cadastrado!');
+    try {
+      if (editingProject) {
+        await updateDocument(editingProject.id, { ...form, profit });
+        success('Projeto atualizado!');
+      } else {
+        const newProject: Omit<Project, 'id'> = { createdAt: new Date().toISOString(), ...form, profit };
+        await addDocument(newProject);
+        success('Projeto cadastrado!');
+      }
+      closeModal();
+    } catch (err) {
+      error('Erro ao salvar projeto.');
     }
-    closeModal();
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     if (!deleteTarget) return;
-    setProjects((prev) => prev.filter((p) => p.id !== deleteTarget.id));
-    success('Projeto removido.');
+    try {
+      await deleteDocument(deleteTarget.id);
+      success('Projeto removido.');
+    } catch (err) {
+      error('Erro ao remover projeto.');
+    }
     setDeleteTarget(null);
   }
 
@@ -184,7 +191,16 @@ export function Projects() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800/30">
-              {filteredProjects.map((project) => (
+              {loading ? (
+                <tr>
+                  <td colSpan={9} className="px-6 py-10 text-center text-gray-500">
+                    <div className="flex justify-center mb-2">
+                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-violet-500"></div>
+                    </div>
+                    Carregando projetos...
+                  </td>
+                </tr>
+              ) : filteredProjects.map((project) => (
                 <tr key={project.id} className="hover:bg-gray-800/30 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -247,7 +263,7 @@ export function Projects() {
             </tbody>
           </table>
         </div>
-        {filteredProjects.length === 0 && (
+        {!loading && filteredProjects.length === 0 && (
           <div className="text-center py-20">
             <Folder className="h-12 w-12 text-gray-700 mx-auto mb-3" />
             <p className="text-gray-500 font-medium">Nenhum projeto encontrado</p>
@@ -272,7 +288,7 @@ export function Projects() {
             <select value={form.clientId} onChange={(e) => setField('clientId', e.target.value)}
               className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all">
               <option value="">Selecione o cliente</option>
-              {mockClients.map((c) => <option key={c.id} value={c.id}>{c.name} — {c.company}</option>)}
+              {clients.map((c) => <option key={c.id} value={c.id}>{c.name} — {c.company}</option>)}
             </select>
           </div>
 

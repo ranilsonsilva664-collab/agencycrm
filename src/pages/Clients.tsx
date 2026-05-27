@@ -14,6 +14,8 @@ import { BudgetEditor } from '../components/BudgetEditor';
 import { useToast } from '../hooks/useToast';
 import { ContractManager } from '../components/ContractManager';
 import { useFirestore } from '../hooks/useFirestore';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 const emptyClient = (): Omit<Client, 'id' | 'createdAt'> => ({
   name: '',
@@ -110,8 +112,46 @@ export function Clients() {
           createdAt: new Date().toISOString(),
           ...form,
         };
-        await addDocument(newClient);
+        const newClientId = await addDocument(newClient);
         success('Cliente cadastrado com sucesso!');
+
+        // Lógica de Automação: Gerar projeto e financeiro se houver valor
+        if (form.projectValue > 0) {
+          try {
+            // Cria Entrada Financeira
+            await addDoc(collection(db, 'financial_entries'), {
+              type: 'income',
+              category: 'Projeto',
+              description: `Projeto: ${form.company || form.name}`,
+              value: form.projectValue,
+              clientId: newClientId,
+              clientName: form.name,
+              service: form.service,
+              date: form.startDate || new Date().toISOString().split('T')[0],
+              createdAt: new Date().toISOString()
+            });
+
+            // Cria Projeto
+            await addDoc(collection(db, 'projects'), {
+              name: `Projeto ${form.service} - ${form.company || form.name}`,
+              clientId: newClientId,
+              clientName: form.name,
+              category: form.service,
+              value: form.projectValue,
+              cost: 0,
+              profit: form.projectValue,
+              date: form.startDate || new Date().toISOString().split('T')[0],
+              deadline: form.deadline,
+              status: 'novo-lead',
+              files: [],
+              observations: '',
+              createdAt: new Date().toISOString()
+            });
+            success('Projeto e Receita gerados automaticamente!');
+          } catch (e) {
+            console.error('Erro ao gerar automações:', e);
+          }
+        }
       }
       closeModal();
     } catch (err) {

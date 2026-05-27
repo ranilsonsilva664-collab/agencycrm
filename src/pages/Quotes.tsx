@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
 import { CheckCircle, Edit2, FileText, Plus, Search, Trash2 } from 'lucide-react';
 import { Quote, QUOTE_STATUS_LABELS, QuoteStatus, ServiceType } from '../types';
-import { mockQuotes } from '../data/mockData';
 import { formatCurrency, formatDate, generateId, getStatusColor } from '../utils/helpers';
 import { SERVICE_LABELS } from '../types';
+import { useFirestore } from '../hooks/useFirestore';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import { Modal } from '../components/Modal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
@@ -32,7 +34,7 @@ const emptyQuote = (): Omit<Quote, 'id' | 'createdAt'> => ({
 });
 
 export function Quotes() {
-  const [quotes, setQuotes] = useState<Quote[]>(mockQuotes);
+  const { data: quotes, loading, addDocument, updateDocument, deleteDocument } = useFirestore<Quote>('quotes');
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [modalOpen, setModalOpen] = useState(false);
@@ -51,25 +53,95 @@ export function Quotes() {
   function openNew() { setEditing(null); setForm(emptyQuote()); setModalOpen(true); }
   function openEdit(q: Quote) { setEditing(q); setForm({ ...q }); setModalOpen(true); }
   function setField<K extends keyof typeof form>(key: K, value: (typeof form)[K]) { setForm((p) => ({ ...p, [key]: value })); }
-  function save() {
+  async function save() {
     if (!form.title.trim() || !form.clientName.trim()) { error('Informe cliente e título do orçamento.'); return; }
-    if (editing) {
-      setQuotes((prev) => prev.map((q) => q.id === editing.id ? { ...editing, ...form } : q));
-      success('Orçamento atualizado!');
-    } else {
-      setQuotes((prev) => [{ id: generateId(), createdAt: new Date().toISOString(), ...form }, ...prev]);
-      success('Orçamento criado!');
+    try {
+      if (editing) {
+        await updateDocument(editing.id, form);
+        success('Orçamento atualizado!');
+      } else {
+        const newQuote: Omit<Quote, 'id'> = { createdAt: new Date().toISOString(), ...form };
+        await addDocument(newQuote);
+        success('Orçamento criado!');
+      }
+      setModalOpen(false);
+    } catch (err) {
+      error('Erro ao salvar orçamento.');
     }
-    setModalOpen(false);
   }
-  function remove() {
+  async function remove() {
     if (!deleteTarget) return;
-    setQuotes((prev) => prev.filter((q) => q.id !== deleteTarget.id));
-    success('Orçamento removido.');
+    try {
+      await deleteDocument(deleteTarget.id);
+      success('Orçamento removido.');
+    } catch (err) {
+      error('Erro ao remover orçamento.');
+    }
+    setDeleteTarget(null);
   }
-  function markClosed(q: Quote) {
-    setQuotes((prev) => prev.map((item) => item.id === q.id ? { ...item, status: 'fechado' } : item));
-    success('Orçamento marcado como fechado.');
+  async function markClosed(q: Quote) {
+    try {
+      await updateDocument(q.id, { status: 'fechado' });
+      success('Orçamento marcado como fechado.');
+      
+      // Lógica de Vínculo
+      try {
+        // Cria Cliente automaticamente
+        const clientRef = await addDoc(collection(db, 'clients'), {
+          name: q.clientName,
+          whatsapp: q.clientWhatsapp,
+          email: q.clientEmail,
+          document: q.clientDocument,
+          address: q.clientAddress,
+          company: q.company,
+          instagram: '',
+          service: q.service,
+          projectValue: q.totalValue,
+          status: 'novo-lead',
+          startDate: new Date().toISOString().split('T')[0],
+          deadline: q.deadline,
+          observations: q.observations,
+          createdAt: new Date().toISOString()
+        });
+
+        // Cria Entrada Financeira
+        await addDoc(collection(db, 'financial_entries'), {
+          type: 'income',
+          category: 'Projeto',
+          description: `Projeto: ${q.company || q.clientName}`,
+          value: q.totalValue,
+          clientId: clientRef.id,
+          clientName: q.clientName,
+          service: q.service,
+          date: new Date().toISOString().split('T')[0],
+          createdAt: new Date().toISOString()
+        });
+
+        // Cria Projeto
+        await addDoc(collection(db, 'projects'), {
+          name: q.title,
+          clientId: clientRef.id,
+          clientName: q.clientName,
+          category: q.service,
+          value: q.totalValue,
+          cost: 0,
+          profit: q.totalValue,
+          date: new Date().toISOString().split('T')[0],
+          deadline: q.deadline,
+          status: 'novo-lead',
+          files: [],
+          observations: q.description,
+          createdAt: new Date().toISOString()
+        });
+
+        success('Cliente, Projeto e Receita gerados com sucesso!');
+      } catch (e) {
+        console.error('Erro ao gerar automações de orçamento aprovado:', e);
+      }
+
+    } catch (err) {
+      error('Erro ao atualizar orçamento.');
+    }
   }
 
   return (
@@ -102,6 +174,11 @@ export function Quotes() {
         </select>
       </div>
 
+      {loading ? (
+        <div className="flex justify-center py-20">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-violet-500"></div>
+        </div>
+      ) : (
       <div className="space-y-4">
         {filtered.map((q) => (
           <div key={q.id} className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-5">
@@ -131,7 +208,11 @@ export function Quotes() {
             </div>
           </div>
         ))}
+        {filtered.length === 0 && (
+          <div className="text-center py-16 text-gray-500">Nenhum orçamento encontrado.</div>
+        )}
       </div>
+      )}
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? 'Editar Orçamento' : 'Novo Orçamento'} size="xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

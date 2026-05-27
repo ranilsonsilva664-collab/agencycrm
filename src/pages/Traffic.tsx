@@ -11,7 +11,7 @@ import {
 } from '../utils/helpers';
 import { TrafficCampaign, TrafficPlatform } from '../types';
 import { TRAFFIC_PLATFORM_LABELS } from '../types';
-import { mockTrafficCampaigns } from '../data/mockData';
+import { useFirestore } from '../hooks/useFirestore';
 import { Modal } from '../components/Modal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
@@ -56,7 +56,7 @@ function RoiBadge({ roi }: { roi: number }) {
 }
 
 export function Traffic() {
-  const [campaigns, setCampaigns] = useState<TrafficCampaign[]>(mockTrafficCampaigns);
+  const { data: campaigns, loading, addDocument, updateDocument, deleteDocument } = useFirestore<TrafficCampaign>('traffic_campaigns');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCampaign, setEditingCampaign] = useState<TrafficCampaign | null>(null);
   const [form, setForm] = useState(emptyCampaign());
@@ -104,23 +104,32 @@ export function Traffic() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!form.campaignName.trim()) { error('Informe o nome da campanha.'); return; }
     if (form.investedValue <= 0)   { error('Informe o valor investido.'); return; }
-    if (editingCampaign) {
-      setCampaigns(prev => prev.map(c => c.id === editingCampaign.id ? { ...editingCampaign, ...form } : c));
-      success('Campanha atualizada!');
-    } else {
-      setCampaigns(prev => [{ id: generateId(), createdAt: new Date().toISOString(), ...form }, ...prev]);
-      success('Campanha cadastrada!');
+    try {
+      if (editingCampaign) {
+        await updateDocument(editingCampaign.id, form);
+        success('Campanha atualizada!');
+      } else {
+        const newCampaign: Omit<TrafficCampaign, 'id'> = { createdAt: new Date().toISOString(), ...form };
+        await addDocument(newCampaign);
+        success('Campanha cadastrada!');
+      }
+      closeModal();
+    } catch (err) {
+      error('Erro ao salvar campanha.');
     }
-    closeModal();
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     if (!deleteTarget) return;
-    setCampaigns(prev => prev.filter(c => c.id !== deleteTarget.id));
-    success('Campanha removida.');
+    try {
+      await deleteDocument(deleteTarget.id);
+      success('Campanha removida.');
+    } catch (err) {
+      error('Erro ao remover campanha.');
+    }
     setDeleteTarget(null);
   }
 
@@ -247,7 +256,16 @@ export function Traffic() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800/30">
-              {campaigns.map(campaign => {
+              {loading ? (
+                <tr>
+                  <td colSpan={12} className="px-4 py-10 text-center text-gray-500">
+                    <div className="flex justify-center mb-2">
+                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-violet-500"></div>
+                    </div>
+                    Carregando campanhas...
+                  </td>
+                </tr>
+              ) : campaigns.map(campaign => {
                 const roi     = calculateROI(campaign.investedValue, campaign.revenueGenerated);
                 const cpl     = calculateCPL(campaign.investedValue, campaign.leadsGenerated);
                 const cpc     = calculateCPC(campaign.investedValue, campaign.clientsClosed);
@@ -370,7 +388,7 @@ export function Traffic() {
             )}
           </table>
 
-          {campaigns.length === 0 && (
+          {!loading && campaigns.length === 0 && (
             <div className="text-center py-16">
               <BarChart2 className="h-12 w-12 text-gray-700 mx-auto mb-3" />
               <p className="text-gray-500 font-medium">Nenhuma campanha cadastrada.</p>

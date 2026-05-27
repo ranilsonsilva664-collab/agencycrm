@@ -5,8 +5,8 @@ import {
 } from 'lucide-react';
 import { formatCurrency, formatDate, generateId } from '../utils/helpers';
 import { FinancialEntry, ServiceType } from '../types';
-import { SERVICE_LABELS } from '../types';
-import { mockFinancialEntries, mockClients } from '../data/mockData';
+import { SERVICE_LABELS, Client } from '../types';
+import { useFirestore } from '../hooks/useFirestore';
 import { Modal } from '../components/Modal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
@@ -29,7 +29,8 @@ const emptyEntry = (): Omit<FinancialEntry, 'id' | 'createdAt'> => ({
 });
 
 export function Financial() {
-  const [entries, setEntries] = useState<FinancialEntry[]>(mockFinancialEntries);
+  const { data: entries, loading, addDocument, updateDocument, deleteDocument } = useFirestore<FinancialEntry>('financial_entries');
+  const { data: clients } = useFirestore<Client>('clients');
   const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -76,7 +77,7 @@ export function Financial() {
 
   function setField<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     if (key === 'clientId') {
-      const client = mockClients.find((c) => c.id === String(value));
+      const client = clients.find((c) => c.id === String(value));
       setForm((prev) => ({ ...prev, clientId: String(value), clientName: client?.name || '' }));
     } else if (key === 'type') {
       const isIncome = value === 'income';
@@ -86,24 +87,33 @@ export function Financial() {
     }
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!form.description.trim()) { error('Informe a descrição.'); return; }
     if (form.value <= 0) { error('Informe um valor maior que zero.'); return; }
 
-    if (editingEntry) {
-      setEntries((prev) => prev.map((e) => e.id === editingEntry.id ? { ...editingEntry, ...form } : e));
-      success('Transação atualizada!');
-    } else {
-      setEntries((prev) => [{ id: generateId(), createdAt: new Date().toISOString(), ...form }, ...prev]);
-      success('Transação adicionada!');
+    try {
+      if (editingEntry) {
+        await updateDocument(editingEntry.id, form);
+        success('Transação atualizada!');
+      } else {
+        const newEntry: Omit<FinancialEntry, 'id'> = { createdAt: new Date().toISOString(), ...form };
+        await addDocument(newEntry);
+        success('Transação adicionada!');
+      }
+      closeModal();
+    } catch (err) {
+      error('Erro ao salvar transação.');
     }
-    closeModal();
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     if (!deleteTarget) return;
-    setEntries((prev) => prev.filter((e) => e.id !== deleteTarget.id));
-    success('Transação removida.');
+    try {
+      await deleteDocument(deleteTarget.id);
+      success('Transação removida.');
+    } catch (err) {
+      error('Erro ao remover transação.');
+    }
     setDeleteTarget(null);
   }
 
@@ -216,7 +226,16 @@ export function Financial() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800/30">
-              {filteredEntries.map((entry) => (
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-10 text-center text-gray-500">
+                    <div className="flex justify-center mb-2">
+                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-violet-500"></div>
+                    </div>
+                    Carregando transações...
+                  </td>
+                </tr>
+              ) : filteredEntries.map((entry) => (
                 <tr key={entry.id} className="hover:bg-gray-800/30 transition-colors">
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${entry.type === 'income' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
@@ -252,7 +271,7 @@ export function Financial() {
               ))}
             </tbody>
           </table>
-          {filteredEntries.length === 0 && (
+          {!loading && filteredEntries.length === 0 && (
             <div className="text-center py-16">
               <p className="text-gray-500">Nenhuma transação encontrada.</p>
             </div>
@@ -313,7 +332,7 @@ export function Financial() {
                 <select value={form.clientId} onChange={(e) => setField('clientId', e.target.value)}
                   className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all">
                   <option value="">Selecione o cliente</option>
-                  {mockClients.map((c) => <option key={c.id} value={c.id}>{c.name} — {c.company}</option>)}
+                  {clients.map((c) => <option key={c.id} value={c.id}>{c.name} — {c.company}</option>)}
                 </select>
               </div>
               <div>

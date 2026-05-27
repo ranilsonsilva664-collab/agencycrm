@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Plus, Calendar, DollarSign, MoreHorizontal, Save, GripVertical } from 'lucide-react';
 import { formatCurrency, formatDate, generateId } from '../utils/helpers';
 import { KanbanCard, KanbanStatus } from '../types';
-import { mockKanbanCards } from '../data/mockData';
+import { useFirestore } from '../hooks/useFirestore';
 import { Modal } from '../components/Modal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
@@ -25,7 +25,7 @@ const emptyCard = (): Omit<KanbanCard, 'id'> => ({
 });
 
 export function Kanban() {
-  const [cards, setCards] = useState<KanbanCard[]>(mockKanbanCards);
+  const { data: cards, addDocument, updateDocument, deleteDocument } = useFirestore<KanbanCard>('kanban_cards');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<KanbanCard | null>(null);
   const [form, setForm] = useState(emptyCard());
@@ -62,27 +62,28 @@ export function Kanban() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!form.title.trim()) return;
     if (editingCard) {
-      setCards((prev) => prev.map((c) => c.id === editingCard.id ? { ...editingCard, ...form } : c));
+      await updateDocument(editingCard.id, form);
       success('Card atualizado!');
     } else {
-      setCards((prev) => [...prev, { id: generateId(), ...form }]);
+      const newCard: Omit<KanbanCard, 'id'> = { createdAt: new Date().toISOString(), ...form };
+      await addDocument(newCard);
       success('Card criado!');
     }
     closeModal();
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     if (!deleteTarget) return;
-    setCards((prev) => prev.filter((c) => c.id !== deleteTarget.id));
+    await deleteDocument(deleteTarget.id);
     success('Card removido.');
     setDeleteTarget(null);
   }
 
-  function moveCard(cardId: string, targetStatus: KanbanStatus) {
-    setCards((prev) => prev.map((c) => c.id === cardId ? { ...c, status: targetStatus } : c));
+  async function moveCard(cardId: string, targetStatus: KanbanStatus) {
+    await updateDocument(cardId, { status: targetStatus });
     success('Card movido!');
   }
 
