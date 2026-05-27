@@ -31,72 +31,53 @@ import { mockProjects } from '../data/mockData';
 const metricCards = [
   {
     title: 'Faturamento Mensal',
-    value: 24000,
-    change: 12.5,
+    value: 0,
+    change: 0,
     icon: DollarSign,
     color: 'from-violet-500 to-fuchsia-500',
   },
   {
     title: 'Gastos com Anúncios',
-    value: 4300,
-    change: -5.2,
+    value: 0,
+    change: 0,
     icon: TrendingDown,
     color: 'from-red-500 to-orange-500',
   },
   {
     title: 'Lucro Líquido',
-    value: 19700,
-    change: 18.3,
+    value: 0,
+    change: 0,
     icon: TrendingUp,
     color: 'from-emerald-500 to-teal-500',
   },
   {
     title: 'Clientes Ativos',
-    value: 5,
-    change: 25,
+    value: 0,
+    change: 0,
     icon: Users,
     color: 'from-blue-500 to-cyan-500',
   },
   {
     title: 'Projetos em Andamento',
-    value: 3,
+    value: 0,
     change: 0,
     icon: FolderOpen,
     color: 'from-amber-500 to-yellow-500',
   },
   {
     title: 'Projetos Finalizados',
-    value: 2,
-    change: 100,
+    value: 0,
+    change: 0,
     icon: CheckCircle,
     color: 'from-green-500 to-emerald-500',
   },
 ];
 
-const monthlyData = [
-  { month: 'Jan', revenue: 18500, expenses: 3200, profit: 15300 },
-  { month: 'Fev', revenue: 22000, expenses: 3800, profit: 18200 },
-  { month: 'Mar', revenue: 19800, expenses: 3500, profit: 16300 },
-  { month: 'Abr', revenue: 25600, expenses: 4100, profit: 21500 },
-  { month: 'Mai', revenue: 28900, expenses: 4500, profit: 24400 },
-  { month: 'Jun', revenue: 24000, expenses: 4300, profit: 19700 },
-];
+const monthlyData: any[] = [];
 
-const serviceData = [
-  { name: 'Vídeos IA', value: 8500, color: SERVICE_COLORS['videos-ia'] },
-  { name: 'Banners', value: 4200, color: SERVICE_COLORS['banners'] },
-  { name: 'Fotos IA', value: 3100, color: SERVICE_COLORS['fotos-ia'] },
-  { name: 'Sites', value: 13000, color: SERVICE_COLORS['sites'] },
-  { name: 'Apps Web', value: 12000, color: SERVICE_COLORS['apps-web'] },
-];
+const serviceData: any[] = [];
 
-const profitByService = [
-  { name: 'Vídeos IA', profit: 6800, color: SERVICE_COLORS['videos-ia'] },
-  { name: 'Banners', profit: 3400, color: SERVICE_COLORS['banners'] },
-  { name: 'Fotos IA', profit: 2500, color: SERVICE_COLORS['fotos-ia'] },
-  { name: 'Sites', profit: 9500, color: SERVICE_COLORS['sites'] },
-  { name: 'Apps Web', profit: 8000, color: SERVICE_COLORS['apps-web'] },
-];
+const profitByService: any[] = [];
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
