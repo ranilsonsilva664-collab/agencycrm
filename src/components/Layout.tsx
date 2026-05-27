@@ -11,8 +11,10 @@ import {
   Menu,
   Sparkles,
   ChevronRight,
+  LogOut,
 } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -32,6 +34,7 @@ const navigation = [
 export function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -97,15 +100,22 @@ export function Layout({ children }: LayoutProps) {
 
           {/* User section */}
           <div className="border-t border-gray-800/50 p-4">
-            <div className="flex items-center gap-3 rounded-xl bg-gray-800/50 p-3 border border-gray-700/50">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-semibold">
-                A
+            <div className="flex items-center gap-3 rounded-xl bg-gray-800/50 p-3 border border-gray-700/50 mb-3">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-semibold uppercase">
+                {user?.displayName ? user.displayName[0] : (user?.email ? user.email[0] : 'U')}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">Admin</p>
-                <p className="text-xs text-gray-500 truncate">admin@agency.com</p>
+                <p className="text-sm font-medium text-white truncate">{user?.displayName || 'Usuário'}</p>
+                <p className="text-xs text-gray-500 truncate">{user?.email}</p>
               </div>
             </div>
+            <button
+              onClick={logout}
+              className="w-full flex items-center justify-center gap-2 rounded-lg py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800/50 transition-colors"
+            >
+              <LogOut className="h-4 w-4" />
+              Sair
+            </button>
           </div>
         </div>
       </aside>
