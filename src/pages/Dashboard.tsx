@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   DollarSign,
   TrendingUp,
@@ -25,59 +26,8 @@ import {
   Area,
 } from 'recharts';
 import { formatCurrency } from '../utils/helpers';
-import { SERVICE_COLORS } from '../types';
-import { mockProjects } from '../data/mockData';
-
-const metricCards = [
-  {
-    title: 'Faturamento Mensal',
-    value: 0,
-    change: 0,
-    icon: DollarSign,
-    color: 'from-violet-500 to-fuchsia-500',
-  },
-  {
-    title: 'Gastos com Anúncios',
-    value: 0,
-    change: 0,
-    icon: TrendingDown,
-    color: 'from-red-500 to-orange-500',
-  },
-  {
-    title: 'Lucro Líquido',
-    value: 0,
-    change: 0,
-    icon: TrendingUp,
-    color: 'from-emerald-500 to-teal-500',
-  },
-  {
-    title: 'Clientes Ativos',
-    value: 0,
-    change: 0,
-    icon: Users,
-    color: 'from-blue-500 to-cyan-500',
-  },
-  {
-    title: 'Projetos em Andamento',
-    value: 0,
-    change: 0,
-    icon: FolderOpen,
-    color: 'from-amber-500 to-yellow-500',
-  },
-  {
-    title: 'Projetos Finalizados',
-    value: 0,
-    change: 0,
-    icon: CheckCircle,
-    color: 'from-green-500 to-emerald-500',
-  },
-];
-
-const monthlyData: any[] = [];
-
-const serviceData: any[] = [];
-
-const profitByService: any[] = [];
+import { SERVICE_COLORS, SERVICE_LABELS, Client, Project, FinancialEntry } from '../types';
+import { useFirestore } from '../hooks/useFirestore';
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -96,6 +46,142 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export function Dashboard() {
+  const { data: clients } = useFirestore<Client>('clients');
+  const { data: projects } = useFirestore<Project>('projects');
+  const { data: financials } = useFirestore<FinancialEntry>('financial_entries');
+
+  const { metricCards, monthlyData, serviceData, profitByService, recentProjects } = useMemo(() => {
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    let faturamento = 0;
+    let gastos = 0;
+
+    financials.forEach(f => {
+      const date = new Date(f.date);
+      if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+        if (f.type === 'income') faturamento += f.value;
+        if (f.type === 'expense') gastos += f.value;
+      }
+    });
+
+    const lucro = faturamento - gastos;
+
+    // Calculando métricas simples (para ter a mudança seria necessário comparar com o mês passado, vamos deixar 0 por enquanto)
+    const clientesAtivos = clients.length;
+    const projetosEmAndamento = projects.filter(p => p.status !== 'finalizado' && p.status !== 'cancelado').length;
+    const projetosFinalizados = projects.filter(p => p.status === 'finalizado').length;
+
+    const cards = [
+      {
+        title: 'Faturamento Mensal',
+        value: faturamento,
+        change: 0,
+        icon: DollarSign,
+        color: 'from-violet-500 to-fuchsia-500',
+      },
+      {
+        title: 'Gastos Mensais',
+        value: gastos,
+        change: 0,
+        icon: TrendingDown,
+        color: 'from-red-500 to-orange-500',
+      },
+      {
+        title: 'Lucro Líquido Mensal',
+        value: lucro,
+        change: 0,
+        icon: TrendingUp,
+        color: 'from-emerald-500 to-teal-500',
+      },
+      {
+        title: 'Total de Clientes',
+        value: clientesAtivos,
+        change: 0,
+        icon: Users,
+        color: 'from-blue-500 to-cyan-500',
+      },
+      {
+        title: 'Projetos em Andamento',
+        value: projetosEmAndamento,
+        change: 0,
+        icon: FolderOpen,
+        color: 'from-amber-500 to-yellow-500',
+      },
+      {
+        title: 'Projetos Finalizados',
+        value: projetosFinalizados,
+        change: 0,
+        icon: CheckCircle,
+        color: 'from-green-500 to-emerald-500',
+      },
+    ];
+
+    // Calcular Receita e Lucro por Serviço
+    const srvData: Record<string, number> = {};
+    const profitSrv: Record<string, number> = {};
+    
+    projects.forEach(p => {
+      if (!srvData[p.category]) srvData[p.category] = 0;
+      srvData[p.category] += p.value;
+
+      if (!profitSrv[p.category]) profitSrv[p.category] = 0;
+      profitSrv[p.category] += p.profit;
+    });
+
+    const parsedServiceData = Object.keys(srvData).map(k => ({
+      name: SERVICE_LABELS[k as keyof typeof SERVICE_LABELS] || k,
+      value: srvData[k],
+      color: SERVICE_COLORS[k as keyof typeof SERVICE_COLORS] || '#8B5CF6'
+    }));
+
+    const parsedProfitByService = Object.keys(profitSrv).map(k => ({
+      name: SERVICE_LABELS[k as keyof typeof SERVICE_LABELS] || k,
+      profit: profitSrv[k],
+      color: SERVICE_COLORS[k as keyof typeof SERVICE_COLORS] || '#8B5CF6'
+    }));
+
+    // Evolução Mensal (Últimos 6 meses)
+    const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const monthlySummary: Record<string, any> = {};
+
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const label = monthNames[d.getMonth()];
+      monthlySummary[`${d.getFullYear()}-${d.getMonth()}`] = {
+        month: label,
+        revenue: 0,
+        expenses: 0,
+        profit: 0
+      };
+    }
+
+    financials.forEach(f => {
+      const d = new Date(f.date);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      if (monthlySummary[key]) {
+        if (f.type === 'income') monthlySummary[key].revenue += f.value;
+        if (f.type === 'expense') monthlySummary[key].expenses += f.value;
+        monthlySummary[key].profit = monthlySummary[key].revenue - monthlySummary[key].expenses;
+      }
+    });
+
+    const parsedMonthlyData = Object.values(monthlySummary);
+
+    // Projetos recentes (últimos 5)
+    const sortedProjects = [...projects].sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()).slice(0, 5);
+
+    return {
+      metricCards: cards,
+      monthlyData: parsedMonthlyData,
+      serviceData: parsedServiceData,
+      profitByService: parsedProfitByService,
+      recentProjects: sortedProjects
+    };
+
+  }, [clients, projects, financials]);
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -149,7 +235,7 @@ export function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Revenue & Expenses Chart */}
         <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Faturamento vs Gastos</h3>
+          <h3 className="text-lg font-semibold text-white mb-4">Faturamento vs Gastos (Últimos 6 Meses)</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={monthlyData}>
@@ -193,6 +279,7 @@ export function Dashboard() {
         {/* Revenue by Service */}
         <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-6">
           <h3 className="text-lg font-semibold text-white mb-4">Faturamento por Serviço</h3>
+          {serviceData.length > 0 ? (
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -212,18 +299,23 @@ export function Dashboard() {
                 <Tooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
+            <div className="grid grid-cols-2 gap-2 mt-4">
+              {serviceData.map((service) => (
+                <div key={service.name} className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: service.color }}
+                  />
+                  <span className="text-xs text-gray-400">{service.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-2 mt-4">
-            {serviceData.map((service) => (
-              <div key={service.name} className="flex items-center gap-2">
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: service.color }}
-                />
-                <span className="text-xs text-gray-400">{service.name}</span>
-              </div>
-            ))}
-          </div>
+          ) : (
+            <div className="h-64 flex flex-col items-center justify-center text-gray-500">
+              <p>Nenhum dado de projeto disponível.</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -232,6 +324,7 @@ export function Dashboard() {
         {/* Profit by Service */}
         <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-6">
           <h3 className="text-lg font-semibold text-white mb-4">Lucro por Serviço</h3>
+          {profitByService.length > 0 ? (
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={profitByService} layout="vertical">
@@ -247,11 +340,16 @@ export function Dashboard() {
               </BarChart>
             </ResponsiveContainer>
           </div>
+          ) : (
+            <div className="h-64 flex flex-col items-center justify-center text-gray-500">
+              <p>Nenhum dado de lucro disponível.</p>
+            </div>
+          )}
         </div>
 
         {/* Monthly Profit Trend */}
         <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Evolução do Lucro</h3>
+          <h3 className="text-lg font-semibold text-white mb-4">Evolução do Lucro (Últimos 6 Meses)</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={monthlyData}>
@@ -277,13 +375,13 @@ export function Dashboard() {
       {/* Recent Activity */}
       <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-white">Atividade Recente</h3>
+          <h3 className="text-lg font-semibold text-white">Atividade Recente (Últimos Projetos)</h3>
           <a href="/projetos" className="text-sm text-violet-400 hover:text-violet-300 transition-colors font-medium">
             Ver todos →
           </a>
         </div>
         <div className="space-y-3">
-          {mockProjects.slice(0, 5).map((project) => (
+          {recentProjects.length > 0 ? recentProjects.map((project) => (
             <div
               key={project.id}
               className="flex items-center justify-between p-4 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:bg-gray-800/50 hover:border-violet-500/20 transition-all cursor-pointer"
@@ -291,11 +389,11 @@ export function Dashboard() {
               <div className="flex items-center gap-4">
                 <div
                   className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: `${SERVICE_COLORS[project.category]}20` }}
+                  style={{ backgroundColor: `${SERVICE_COLORS[project.category as keyof typeof SERVICE_COLORS]}20` }}
                 >
                   <FolderOpen
                     className="w-5 h-5"
-                    style={{ color: SERVICE_COLORS[project.category] }}
+                    style={{ color: SERVICE_COLORS[project.category as keyof typeof SERVICE_COLORS] }}
                   />
                 </div>
                 <div>
@@ -308,7 +406,9 @@ export function Dashboard() {
                 <p className="text-xs text-gray-500 mt-0.5">{project.status}</p>
               </div>
             </div>
-          ))}
+          )) : (
+            <p className="text-gray-500 py-4">Nenhum projeto cadastrado recentemente.</p>
+          )}
         </div>
       </div>
     </div>
