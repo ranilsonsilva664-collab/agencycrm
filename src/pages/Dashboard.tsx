@@ -8,6 +8,7 @@ import {
   CheckCircle,
   ArrowUpRight,
   ArrowDownRight,
+  Target,
 } from 'lucide-react';
 import {
   BarChart,
