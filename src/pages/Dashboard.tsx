@@ -26,7 +26,7 @@ import {
   Area,
 } from 'recharts';
 import { formatCurrency } from '../utils/helpers';
-import { SERVICE_COLORS, SERVICE_LABELS, Client, Project, FinancialEntry } from '../types';
+import { SERVICE_COLORS, SERVICE_LABELS, Client, Project, FinancialEntry, TrafficCampaign } from '../types';
 import { useFirestore } from '../hooks/useFirestore';
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -49,6 +49,7 @@ export function Dashboard() {
   const { data: clients } = useFirestore<Client>('clients');
   const { data: projects } = useFirestore<Project>('projects');
   const { data: financials } = useFirestore<FinancialEntry>('financial_entries');
+  const { data: campaigns } = useFirestore<TrafficCampaign>('traffic_campaigns');
 
   const { metricCards, monthlyData, serviceData, profitByService, recentProjects } = useMemo(() => {
     const currentMonth = new Date().getMonth();
@@ -66,6 +67,16 @@ export function Dashboard() {
     });
 
     const lucro = faturamento - gastos;
+
+    let faturamentoAds = 0;
+    campaigns.forEach(c => {
+      const date = new Date(c.date);
+      if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+        faturamentoAds += c.revenueGenerated;
+      }
+    });
+
+    const faturamentoOrganico = Math.max(0, faturamento - faturamentoAds);
 
     // Calculando métricas simples (para ter a mudança seria necessário comparar com o mês passado, vamos deixar 0 por enquanto)
     const clientesAtivos = clients.length;
@@ -93,6 +104,20 @@ export function Dashboard() {
         change: 0,
         icon: TrendingUp,
         color: 'from-emerald-500 to-teal-500',
+      },
+      {
+        title: 'Faturamento via Anúncios',
+        value: faturamentoAds,
+        change: 0,
+        icon: Target,
+        color: 'from-pink-500 to-rose-500',
+      },
+      {
+        title: 'Faturamento Orgânico',
+        value: faturamentoOrganico,
+        change: 0,
+        icon: DollarSign,
+        color: 'from-blue-500 to-cyan-500',
       },
       {
         title: 'Total de Clientes',
@@ -180,7 +205,7 @@ export function Dashboard() {
       recentProjects: sortedProjects
     };
 
-  }, [clients, projects, financials]);
+  }, [clients, projects, financials, campaigns]);
 
   return (
     <div className="space-y-8">
@@ -191,7 +216,7 @@ export function Dashboard() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4">
         {metricCards.map((metric) => (
           <div
             key={metric.title}
