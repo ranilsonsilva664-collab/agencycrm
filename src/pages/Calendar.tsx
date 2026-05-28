@@ -7,11 +7,12 @@ import {
 } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { isOverdue, getDaysUntilDeadline, formatCurrency } from '../utils/helpers';
-import { mockProjects } from '../data/mockData';
-import { PROJECT_STATUS_LABELS, SERVICE_LABELS } from '../types';
+import { PROJECT_STATUS_LABELS, SERVICE_LABELS, Project } from '../types';
+import { useFirestore } from '../hooks/useFirestore';
 import { Modal } from '../components/Modal';
 
 export function Calendar() {
+  const { data: projects, loading } = useFirestore<Project>('projects');
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [dayModalOpen, setDayModalOpen] = useState(false);
@@ -24,14 +25,14 @@ export function Calendar() {
 
   function getProjectsForDay(day: Date) {
     const ds = format(day, 'yyyy-MM-dd');
-    return mockProjects.filter((p) => p.deadline === ds);
+    return projects.filter((p) => p.deadline === ds);
   }
 
-  const upcomingProjects = mockProjects
-    .filter((p) => !isOverdue(p.deadline) && getDaysUntilDeadline(p.deadline) <= 7 && getDaysUntilDeadline(p.deadline) >= 0)
+  const upcomingProjects = projects
+    .filter((p) => p.deadline && !isOverdue(p.deadline) && getDaysUntilDeadline(p.deadline) <= 7 && getDaysUntilDeadline(p.deadline) >= 0)
     .sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime());
 
-  const overdueProjects = mockProjects.filter((p) => isOverdue(p.deadline));
+  const overdueProjects = projects.filter((p) => p.deadline && isOverdue(p.deadline));
   const todayProjects = getProjectsForDay(new Date());
 
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
@@ -77,6 +78,11 @@ export function Calendar() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Calendar Grid */}
         <div className="xl:col-span-2 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-6">
+          {loading && (
+            <div className="flex justify-center mb-4">
+              <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-violet-500"></div>
+            </div>
+          )}
           {/* Nav */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-white capitalize">
