@@ -13,6 +13,7 @@ export interface Client {
   startDate: string;
   deadline: string;
   observations: string;
+  source?: 'anuncio' | 'organico';
   createdAt: string;
 }
 

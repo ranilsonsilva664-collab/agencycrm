@@ -31,6 +31,7 @@ const emptyClient = (): Omit<Client, 'id' | 'createdAt'> => ({
   startDate: new Date().toISOString().split('T')[0],
   deadline: '',
   observations: '',
+  source: 'organico',
 });
 
 export function Clients() {
@@ -86,6 +87,7 @@ export function Clients() {
       startDate: c.startDate,
       deadline: c.deadline,
       observations: c.observations,
+      source: c.source || 'organico',
     });
     setModalOpen(true);
   }
@@ -255,9 +257,16 @@ export function Clients() {
                   <p className="text-sm text-gray-500">{client.company}</p>
                 </div>
               </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(client.status)}`}>
-                {CLIENT_STATUS_LABELS[client.status]}
-              </span>
+              <div className="flex flex-col items-end gap-2">
+                <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(client.status)}`}>
+                  {CLIENT_STATUS_LABELS[client.status]}
+                </span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider ${
+                  client.source === 'anuncio' ? 'bg-pink-500/20 text-pink-400 border-pink-500/30' : 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+                }`}>
+                  {client.source === 'anuncio' ? 'Anúncio' : 'Orgânico'}
+                </span>
+              </div>
             </div>
 
             <div className="space-y-2.5 mb-4">
@@ -425,6 +434,19 @@ export function Clients() {
               placeholder="Nome da empresa"
               className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
             />
+          </div>
+
+          {/* Origem */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1.5">Origem do Cliente</label>
+            <select
+              value={form.source || 'organico'}
+              onChange={(e) => setField('source', e.target.value as 'anuncio' | 'organico')}
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+            >
+              <option value="organico">Orgânico</option>
+              <option value="anuncio">Anúncio Pago</option>
+            </select>
           </div>
 
           {/* Serviço */}
