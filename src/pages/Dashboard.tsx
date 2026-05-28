@@ -59,10 +59,11 @@ export function Dashboard() {
     let gastos = 0;
 
     financials.forEach(f => {
+      if (!f.date) return;
       const date = new Date(f.date);
       if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-        if (f.type === 'income') faturamento += f.value;
-        if (f.type === 'expense') gastos += f.value;
+        if (f.type === 'income') faturamento += (Number(f.value) || 0);
+        if (f.type === 'expense') gastos += (Number(f.value) || 0);
       }
     });
 
@@ -70,9 +71,10 @@ export function Dashboard() {
 
     let faturamentoAds = 0;
     campaigns.forEach(c => {
+      if (!c.date) return;
       const date = new Date(c.date);
       if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-        faturamentoAds += c.revenueGenerated;
+        faturamentoAds += (Number(c.revenueGenerated) || 0);
       }
     });
 
@@ -148,10 +150,10 @@ export function Dashboard() {
     
     projects.forEach(p => {
       if (!srvData[p.category]) srvData[p.category] = 0;
-      srvData[p.category] += p.value;
+      srvData[p.category] += (Number(p.value) || 0);
 
       if (!profitSrv[p.category]) profitSrv[p.category] = 0;
-      profitSrv[p.category] += p.profit;
+      profitSrv[p.category] += (Number(p.profit) || 0);
     });
 
     const parsedServiceData = Object.keys(srvData).map(k => ({
@@ -183,11 +185,14 @@ export function Dashboard() {
     }
 
     financials.forEach(f => {
+      if (!f.date) return;
       const d = new Date(f.date);
+      if (isNaN(d.getTime())) return;
+      
       const key = `${d.getFullYear()}-${d.getMonth()}`;
       if (monthlySummary[key]) {
-        if (f.type === 'income') monthlySummary[key].revenue += f.value;
-        if (f.type === 'expense') monthlySummary[key].expenses += f.value;
+        if (f.type === 'income') monthlySummary[key].revenue += (Number(f.value) || 0);
+        if (f.type === 'expense') monthlySummary[key].expenses += (Number(f.value) || 0);
         monthlySummary[key].profit = monthlySummary[key].revenue - monthlySummary[key].expenses;
       }
     });
