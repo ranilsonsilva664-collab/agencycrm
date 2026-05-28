@@ -92,16 +92,22 @@ export function Financial() {
     if (form.value <= 0) { error('Informe um valor maior que zero.'); return; }
 
     try {
+      const dataToSave = { ...form };
+      if (dataToSave.service === undefined) {
+        delete dataToSave.service;
+      }
+
       if (editingEntry) {
-        await updateDocument(editingEntry.id, form);
+        await updateDocument(editingEntry.id, dataToSave);
         success('Transação atualizada!');
       } else {
-        const newEntry: Omit<FinancialEntry, 'id'> = { createdAt: new Date().toISOString(), ...form };
+        const newEntry: Omit<FinancialEntry, 'id'> = { createdAt: new Date().toISOString(), ...dataToSave };
         await addDocument(newEntry);
         success('Transação adicionada!');
       }
       closeModal();
     } catch (err) {
+      console.error(err);
       error('Erro ao salvar transação.');
     }
   }

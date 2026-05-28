@@ -147,7 +147,18 @@ export function Clients() {
               observations: '',
               createdAt: new Date().toISOString()
             });
-            success('Projeto e Receita gerados automaticamente!');
+
+            // Cria Kanban Card
+            await addDoc(collection(db, 'kanban_cards'), {
+              title: `Projeto ${form.service} - ${form.company || form.name}`,
+              client: form.name,
+              value: form.projectValue,
+              status: 'novo-lead',
+              dueDate: form.deadline,
+              createdAt: new Date().toISOString()
+            });
+
+            success('Projeto, Receita e Kanban gerados automaticamente!');
           } catch (e) {
             console.error('Erro ao gerar automações:', e);
           }

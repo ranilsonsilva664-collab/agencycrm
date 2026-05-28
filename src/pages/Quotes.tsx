@@ -134,7 +134,17 @@ export function Quotes() {
           createdAt: new Date().toISOString()
         });
 
-        success('Cliente, Projeto e Receita gerados com sucesso!');
+        // Cria Kanban Card
+        await addDoc(collection(db, 'kanban_cards'), {
+          title: q.title,
+          client: q.clientName,
+          value: q.totalValue,
+          status: 'novo-lead',
+          dueDate: q.deadline,
+          createdAt: new Date().toISOString()
+        });
+
+        success('Cliente, Projeto, Receita e Kanban gerados com sucesso!');
       } catch (e) {
         console.error('Erro ao gerar automações de orçamento aprovado:', e);
       }
