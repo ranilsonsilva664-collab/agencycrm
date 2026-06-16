@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   DollarSign,
   TrendingUp,
@@ -47,14 +47,21 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export function Dashboard() {
+  const [dateFilter, setDateFilter] = useState<'today' | 'week' | 'month'>('month');
   const { data: clients } = useFirestore<Client>('clients');
   const { data: projects } = useFirestore<Project>('projects');
   const { data: financials } = useFirestore<FinancialEntry>('financial_entries');
   const { data: campaigns } = useFirestore<TrafficCampaign>('traffic_campaigns');
 
   const { metricCards, monthlyData, serviceData, profitByService, recentProjects } = useMemo(() => {
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfWeek = new Date(startOfToday);
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const filterDate = dateFilter === 'today' ? startOfToday : dateFilter === 'week' ? startOfWeek : startOfMonth;
+    const titleSuffix = dateFilter === 'today' ? 'de Hoje' : dateFilter === 'week' ? 'da Semana' : 'do Mês';
 
     let faturamento = 0;
     let gastos = 0;
@@ -62,7 +69,7 @@ export function Dashboard() {
     financials.forEach(f => {
       if (!f.date) return;
       const date = new Date(f.date);
-      if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+      if (date >= filterDate) {
         if (f.type === 'income') faturamento += (Number(f.value) || 0);
         if (f.type === 'expense') gastos += (Number(f.value) || 0);
       }
@@ -74,49 +81,48 @@ export function Dashboard() {
     campaigns.forEach(c => {
       if (!c.date) return;
       const date = new Date(c.date);
-      if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+      if (date >= filterDate) {
         faturamentoAds += (Number(c.revenueGenerated) || 0);
       }
     });
 
     const faturamentoOrganico = Math.max(0, faturamento - faturamentoAds);
 
-    // Calculando métricas simples (para ter a mudança seria necessário comparar com o mês passado, vamos deixar 0 por enquanto)
     const clientesAtivos = clients.length;
     const projetosEmAndamento = projects.filter(p => p.status !== 'finalizado' && p.status !== 'cancelado').length;
     const projetosFinalizados = projects.filter(p => p.status === 'finalizado').length;
 
     const cards = [
       {
-        title: 'Faturamento Mensal',
+        title: `Faturamento ${titleSuffix}`,
         value: faturamento,
         change: 0,
         icon: DollarSign,
         color: 'from-blue-500 to-cyan-500',
       },
       {
-        title: 'Gastos Mensais',
+        title: `Gastos ${titleSuffix}`,
         value: gastos,
         change: 0,
         icon: TrendingDown,
         color: 'from-red-500 to-orange-500',
       },
       {
-        title: 'Lucro Líquido Mensal',
+        title: `Lucro Líquido ${titleSuffix}`,
         value: lucro,
         change: 0,
         icon: TrendingUp,
         color: 'from-emerald-500 to-teal-500',
       },
       {
-        title: 'Faturamento via Anúncios',
+        title: `Fat. via Anúncios ${titleSuffix}`,
         value: faturamentoAds,
         change: 0,
         icon: Target,
         color: 'from-pink-500 to-rose-500',
       },
       {
-        title: 'Faturamento Orgânico',
+        title: `Fat. Orgânico ${titleSuffix}`,
         value: faturamentoOrganico,
         change: 0,
         icon: DollarSign,
@@ -211,14 +217,42 @@ export function Dashboard() {
       recentProjects: sortedProjects
     };
 
-  }, [clients, projects, financials, campaigns]);
+  }, [clients, projects, financials, campaigns, dateFilter]);
 
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-        <p className="text-gray-400 mt-1">Visão geral da sua agência</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+          <p className="text-gray-400 mt-1">Visão geral da sua agência</p>
+        </div>
+        <div className="flex items-center bg-gray-900/50 border border-gray-800 rounded-xl p-1">
+          <button
+            onClick={() => setDateFilter('today')}
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+              dateFilter === 'today' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
+            }`}
+          >
+            Hoje
+          </button>
+          <button
+            onClick={() => setDateFilter('week')}
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+              dateFilter === 'week' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
+            }`}
+          >
+            Semana
+          </button>
+          <button
+            onClick={() => setDateFilter('month')}
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+              dateFilter === 'month' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
+            }`}
+          >
+            Mês
+          </button>
+        </div>
       </div>
 
       {/* Metrics Grid */}
