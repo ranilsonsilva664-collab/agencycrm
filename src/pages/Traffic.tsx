@@ -470,6 +470,7 @@ export function Traffic() {
             </div>
           </div>
         ) : (
+        <>
         <div className="space-y-6">
 
           {/* Linha 1 — Plataforma + Data + Nome */}
@@ -657,6 +658,7 @@ export function Traffic() {
             {editingCampaign ? 'Salvar alterações' : 'Cadastrar campanha'}
           </button>
         </div>
+        </>
         )}
       </Modal>
 
