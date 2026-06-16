@@ -194,7 +194,7 @@ export function Clients() {
           <h1 className="text-3xl font-bold text-white">Clientes</h1>
           <p className="text-gray-400 mt-1">Gerencie seus clientes e projetos</p>
         </div>
-        <button onClick={openNew} className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-violet-500/25 transition-all duration-200">
+        <button onClick={openNew} className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200">
           <Plus className="h-5 w-5" /> Novo Cliente
         </button>
       </div>
@@ -208,13 +208,13 @@ export function Clients() {
             placeholder="Buscar por nome ou empresa..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-gray-900/50 border border-gray-800 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all"
+            className="w-full pl-12 pr-4 py-3 bg-gray-900/50 border border-gray-800 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-3 bg-gray-900/50 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all"
+          className="px-4 py-3 bg-gray-900/50 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
         >
           <option value="all">Todos os Status</option>
           {Object.entries(CLIENT_STATUS_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
@@ -241,15 +241,15 @@ export function Clients() {
       {/* Clients Grid */}
       {loading ? (
         <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-violet-500"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredClients.map((client) => (
-          <div key={client.id} className="group rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-6 hover:border-violet-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/10">
+          <div key={client.id} className="group rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-6 hover:border-blue-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-violet-500/25">
+                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-blue-500/25">
                   {client.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
@@ -271,7 +271,7 @@ export function Clients() {
 
             <div className="space-y-2.5 mb-4">
               <div className="flex items-center gap-2 text-sm text-gray-400">
-                <Phone className="h-4 w-4 text-violet-400/70" />
+                <Phone className="h-4 w-4 text-blue-400/70" />
                 <button
                   onClick={() => { setBudgetClient(client); setBudgetModalOpen(true); }}
                   className="hover:text-emerald-400 hover:underline transition-colors text-left cursor-pointer"
@@ -282,11 +282,11 @@ export function Clients() {
               </div>
               {/* WhatsApp link removed - now integrated with budget button above */}
               <div className="flex items-center gap-2 text-sm text-gray-400">
-                <AtSign className="h-4 w-4 text-violet-400/70" />
+                <AtSign className="h-4 w-4 text-blue-400/70" />
                 <span>{client.instagram}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-400">
-                <Building className="h-4 w-4 text-violet-400/70" />
+                <Building className="h-4 w-4 text-blue-400/70" />
                 <span>{SERVICE_LABELS[client.service]}</span>
               </div>
             </div>
@@ -313,7 +313,7 @@ export function Clients() {
                 </button>
                 <button
                   onClick={() => openEdit(client)}
-                  className="p-2 text-gray-400 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-colors"
+                  className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors"
                   title="Editar"
                 >
                   <Edit2 className="h-4 w-4" />
@@ -362,7 +362,7 @@ export function Clients() {
               value={form.name}
               onChange={(e) => setField('name', e.target.value)}
               placeholder="Ex: João Silva"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             />
           </div>
 
@@ -374,7 +374,7 @@ export function Clients() {
               value={form.whatsapp}
               onChange={(e) => setField('whatsapp', e.target.value)}
               placeholder="(11) 99999-9999"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             />
           </div>
 
@@ -386,7 +386,7 @@ export function Clients() {
               value={form.email || ''}
               onChange={(e) => setField('email', e.target.value)}
               placeholder="cliente@email.com"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             />
           </div>
 
@@ -397,7 +397,7 @@ export function Clients() {
               value={form.document || ''}
               onChange={(e) => setField('document', e.target.value)}
               placeholder="000.000.000-00"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             />
           </div>
 
@@ -408,7 +408,7 @@ export function Clients() {
               value={form.address || ''}
               onChange={(e) => setField('address', e.target.value)}
               placeholder="Rua, número, cidade/UF"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             />
           </div>
 
@@ -420,7 +420,7 @@ export function Clients() {
               value={form.instagram}
               onChange={(e) => setField('instagram', e.target.value)}
               placeholder="@usuario"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             />
           </div>
 
@@ -432,7 +432,7 @@ export function Clients() {
               value={form.company}
               onChange={(e) => setField('company', e.target.value)}
               placeholder="Nome da empresa"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             />
           </div>
 
@@ -442,7 +442,7 @@ export function Clients() {
             <select
               value={form.source || 'organico'}
               onChange={(e) => setField('source', e.target.value as 'anuncio' | 'organico')}
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             >
               <option value="organico">Orgânico</option>
               <option value="anuncio">Anúncio Pago</option>
@@ -455,7 +455,7 @@ export function Clients() {
             <select
               value={form.service}
               onChange={(e) => setField('service', e.target.value as ServiceType)}
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             >
               {Object.entries(SERVICE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
             </select>
@@ -470,7 +470,7 @@ export function Clients() {
               value={form.projectValue}
               onChange={(e) => setField('projectValue', Number(e.target.value))}
               placeholder="0,00"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             />
           </div>
 
@@ -480,7 +480,7 @@ export function Clients() {
             <select
               value={form.status}
               onChange={(e) => setField('status', e.target.value as ClientStatus)}
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             >
               {Object.entries(CLIENT_STATUS_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
             </select>
@@ -493,7 +493,7 @@ export function Clients() {
               type="date"
               value={form.startDate}
               onChange={(e) => setField('startDate', e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             />
           </div>
 
@@ -504,7 +504,7 @@ export function Clients() {
               type="date"
               value={form.deadline}
               onChange={(e) => setField('deadline', e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all"
             />
           </div>
 
@@ -516,7 +516,7 @@ export function Clients() {
               value={form.observations}
               onChange={(e) => setField('observations', e.target.value)}
               placeholder="Informações adicionais sobre o cliente ou projeto..."
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all resize-none"
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all resize-none"
             />
           </div>
         </div>
@@ -528,7 +528,7 @@ export function Clients() {
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium hover:shadow-lg hover:shadow-violet-500/25 transition-all"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium hover:shadow-lg hover:shadow-blue-500/25 transition-all"
           >
             <Save className="h-4 w-4" />
             {editingClient ? 'Salvar alterações' : 'Cadastrar cliente'}
@@ -552,7 +552,7 @@ export function Clients() {
         <Modal open={!!detailClient} onClose={() => setDetailClient(null)} title="Detalhes do Cliente" size="xl">
           <div className="space-y-6">
             <div className="flex items-center gap-4">
-              <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-xl">
+              <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl">
                 {detailClient.name.charAt(0).toUpperCase()}
               </div>
               <div>

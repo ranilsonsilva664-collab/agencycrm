@@ -56,12 +56,12 @@ export function Layout({ children }: LayoutProps) {
         <div className="flex h-full flex-col">
           {/* Logo */}
           <div className="flex h-20 items-center gap-3 px-6 border-b border-gray-800/50">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-500/25">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg shadow-blue-500/25">
               <Sparkles className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-                AgencyCRM
+              <h1 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                RIA Studio
               </h1>
               <p className="text-xs text-gray-500">AI & Digital Agency</p>
             </div>
@@ -79,19 +79,19 @@ export function Layout({ children }: LayoutProps) {
                   className={cn(
                     'group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200',
                     isActive
-                      ? 'bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 text-white shadow-lg shadow-violet-500/10 border border-violet-500/20'
+                      ? 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-white shadow-lg shadow-blue-500/10 border border-blue-500/20'
                       : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
                   )}
                 >
                   <item.icon
                     className={cn(
                       'h-5 w-5 transition-colors',
-                      isActive ? 'text-violet-400' : 'text-gray-500 group-hover:text-gray-300'
+                      isActive ? 'text-blue-400' : 'text-gray-500 group-hover:text-gray-300'
                     )}
                   />
                   {item.name}
                   {isActive && (
-                    <ChevronRight className="ml-auto h-4 w-4 text-violet-400" />
+                    <ChevronRight className="ml-auto h-4 w-4 text-blue-400" />
                   )}
                 </Link>
               );
@@ -101,7 +101,7 @@ export function Layout({ children }: LayoutProps) {
           {/* User section */}
           <div className="border-t border-gray-800/50 p-4">
             <div className="flex items-center gap-3 rounded-xl bg-gray-800/50 p-3 border border-gray-700/50 mb-3">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-semibold uppercase">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-semibold uppercase">
                 {user?.displayName ? user.displayName[0] : (user?.email ? user.email[0] : 'U')}
               </div>
               <div className="flex-1 min-w-0">
@@ -131,11 +131,11 @@ export function Layout({ children }: LayoutProps) {
             <Menu className="h-6 w-6" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500">
               <Sparkles className="h-5 w-5 text-white" />
             </div>
-            <span className="font-semibold bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-              AgencyCRM
+            <span className="font-semibold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              RIA Studio
             </span>
           </div>
         </header>

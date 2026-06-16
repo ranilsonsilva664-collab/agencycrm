@@ -80,7 +80,7 @@ export function Calendar() {
         <div className="xl:col-span-2 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-6">
           {loading && (
             <div className="flex justify-center mb-4">
-              <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-violet-500"></div>
+              <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500"></div>
             </div>
           )}
           {/* Nav */}
@@ -94,7 +94,7 @@ export function Calendar() {
                 <ChevronLeft className="h-5 w-5" />
               </button>
               <button onClick={() => setCurrentMonth(new Date())}
-                className="px-4 py-2 rounded-lg bg-violet-500/20 text-violet-400 hover:bg-violet-500/30 transition-colors text-sm font-medium">
+                className="px-4 py-2 rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors text-sm font-medium">
                 Hoje
               </button>
               <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
@@ -124,21 +124,21 @@ export function Calendar() {
                   key={day.toISOString()}
                   onClick={() => handleDayClick(day)}
                   className={`relative min-h-[80px] p-2 rounded-xl border text-left transition-all duration-150
-                    ${today ? 'border-violet-500/60 bg-violet-500/15' : 'border-gray-800/40 bg-gray-800/20'}
+                    ${today ? 'border-blue-500/60 bg-blue-500/15' : 'border-gray-800/40 bg-gray-800/20'}
                     ${!inMonth ? 'opacity-30' : ''}
-                    ${isSelected ? 'ring-2 ring-violet-400' : ''}
-                    hover:border-violet-500/40 hover:bg-gray-800/40`}
+                    ${isSelected ? 'ring-2 ring-blue-400' : ''}
+                    hover:border-blue-500/40 hover:bg-gray-800/40`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className={`text-sm font-semibold leading-none ${today ? 'text-violet-400' : inMonth ? 'text-white' : 'text-gray-500'}`}>
+                    <span className={`text-sm font-semibold leading-none ${today ? 'text-blue-400' : inMonth ? 'text-white' : 'text-gray-500'}`}>
                       {format(day, 'd')}
                     </span>
-                    {today && <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />}
+                    {today && <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
                   </div>
                   <div className="space-y-0.5">
                     {dayProjects.slice(0, 2).map((p) => (
                       <div key={p.id}
-                        className={`text-[10px] px-1.5 py-0.5 rounded-md truncate font-medium ${isOverdue(p.deadline) ? 'bg-red-500/25 text-red-400' : 'bg-violet-500/25 text-violet-400'}`}>
+                        className={`text-[10px] px-1.5 py-0.5 rounded-md truncate font-medium ${isOverdue(p.deadline) ? 'bg-red-500/25 text-red-400' : 'bg-blue-500/25 text-blue-400'}`}>
                         {p.name.substring(0, 12)}…
                       </div>
                     ))}
@@ -178,19 +178,19 @@ export function Calendar() {
           {/* Upcoming */}
           <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-5 flex-1">
             <div className="flex items-center gap-2 mb-4">
-              <Clock className="h-5 w-5 text-violet-400" />
+              <Clock className="h-5 w-5 text-blue-400" />
               <h3 className="font-semibold text-white">Próximas Entregas</h3>
             </div>
             <div className="space-y-2">
               {upcomingProjects.slice(0, 6).map((p) => {
                 const days = getDaysUntilDeadline(p.deadline);
                 return (
-                  <div key={p.id} className="p-3 rounded-xl bg-gray-800/50 border border-gray-700/30 hover:border-violet-500/30 transition-colors cursor-pointer"
+                  <div key={p.id} className="p-3 rounded-xl bg-gray-800/50 border border-gray-700/30 hover:border-blue-500/30 transition-colors cursor-pointer"
                     onClick={() => { setSelectedDay(new Date(p.deadline + 'T00:00:00')); setDayModalOpen(true); }}>
                     <p className="font-medium text-white text-sm">{p.name}</p>
                     <div className="flex items-center justify-between mt-1">
                       <p className="text-xs text-gray-400">{p.clientName}</p>
-                      <span className={`text-xs font-medium ${days <= 2 ? 'text-amber-400' : 'text-violet-400'}`}>
+                      <span className={`text-xs font-medium ${days <= 2 ? 'text-amber-400' : 'text-blue-400'}`}>
                         {days === 0 ? 'Hoje!' : `em ${days}d`}
                       </span>
                     </div>
@@ -237,8 +237,8 @@ export function Calendar() {
           return (
             <div className="space-y-4">
               <div className="flex items-center gap-3 mb-2">
-                <div className={`p-3 rounded-xl ${isToday(selectedDay) ? 'bg-violet-500/20' : 'bg-gray-800'}`}>
-                  <CalIcon className={`h-6 w-6 ${isToday(selectedDay) ? 'text-violet-400' : 'text-gray-400'}`} />
+                <div className={`p-3 rounded-xl ${isToday(selectedDay) ? 'bg-blue-500/20' : 'bg-gray-800'}`}>
+                  <CalIcon className={`h-6 w-6 ${isToday(selectedDay) ? 'text-blue-400' : 'text-gray-400'}`} />
                 </div>
                 <div>
                   <p className="text-white font-semibold capitalize">{format(selectedDay, 'EEEE', { locale: ptBR })}</p>
@@ -255,13 +255,13 @@ export function Calendar() {
                           <p className="font-semibold text-white">{p.name}</p>
                           <p className="text-sm text-gray-400 mt-0.5">{p.clientName}</p>
                         </div>
-                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium flex-shrink-0 ${isOverdue(p.deadline) ? 'bg-red-500/20 text-red-400' : 'bg-violet-500/20 text-violet-400'}`}>
+                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium flex-shrink-0 ${isOverdue(p.deadline) ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}>
                           {isOverdue(p.deadline) ? `${Math.abs(getDaysUntilDeadline(p.deadline))}d atraso` : 'No prazo'}
                         </span>
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Tag className="h-4 w-4 text-violet-400/70" />
+                          <Tag className="h-4 w-4 text-blue-400/70" />
                           <span>{SERVICE_LABELS[p.category]}</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-emerald-400 font-medium">
@@ -270,7 +270,7 @@ export function Calendar() {
                         <div className="col-span-2">
                           <span className={`text-xs px-2 py-1 rounded-full border ${
                             p.status === 'finalizado' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
-                            p.status === 'em-producao' ? 'bg-violet-500/20 text-violet-400 border-violet-500/30' :
+                            p.status === 'em-producao' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
                             'bg-gray-700 text-gray-400 border-gray-600'
                           }`}>
                             {PROJECT_STATUS_LABELS[p.status]}

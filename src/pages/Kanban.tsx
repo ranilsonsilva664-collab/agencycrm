@@ -11,7 +11,7 @@ import { useToast } from '../hooks/useToast';
 const COLUMNS: { id: KanbanStatus; title: string; borderColor: string; badgeColor: string }[] = [
   { id: 'novo-lead',    title: 'Novo Lead',     borderColor: 'border-t-blue-500',   badgeColor: 'bg-blue-500/20 text-blue-400' },
   { id: 'orcamento',   title: 'Orçamento',      borderColor: 'border-t-yellow-500', badgeColor: 'bg-yellow-500/20 text-yellow-400' },
-  { id: 'em-producao', title: 'Em Produção',    borderColor: 'border-t-violet-500', badgeColor: 'bg-violet-500/20 text-violet-400' },
+  { id: 'em-producao', title: 'Em Produção',    borderColor: 'border-t-blue-500', badgeColor: 'bg-blue-500/20 text-blue-400' },
   { id: 'revisao',     title: 'Revisão',        borderColor: 'border-t-pink-500',   badgeColor: 'bg-pink-500/20 text-pink-400' },
   { id: 'finalizado',  title: 'Finalizado',     borderColor: 'border-t-emerald-500',badgeColor: 'bg-emerald-500/20 text-emerald-400' },
 ];
@@ -134,7 +134,7 @@ export function Kanban() {
           <p className="text-gray-400 mt-1">Arraste os cards entre colunas para atualizar o status</p>
         </div>
         <button onClick={() => openNew()}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-violet-500/25 transition-all">
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all">
           <Plus className="h-5 w-5" /> Novo Card
         </button>
       </div>
@@ -153,7 +153,7 @@ export function Kanban() {
               onDragLeave={onDragLeaveColumn}
               onDrop={(e) => onDropColumn(e, col.id)}
               className={`flex-shrink-0 w-72 rounded-2xl border border-gray-800/50 flex flex-col transition-all duration-200
-                ${isOver ? 'border-violet-500/50 bg-violet-500/5 shadow-lg shadow-violet-500/10' : 'bg-gradient-to-br from-gray-900 to-gray-900/50'}`}
+                ${isOver ? 'border-blue-500/50 bg-blue-500/5 shadow-lg shadow-blue-500/10' : 'bg-gradient-to-br from-gray-900 to-gray-900/50'}`}
             >
               {/* Column header */}
               <div className={`p-4 border-b border-gray-800/50 border-t-4 ${col.borderColor} rounded-t-2xl`}>
@@ -171,14 +171,14 @@ export function Kanban() {
               </div>
 
               {/* Cards list */}
-              <div className={`flex-1 p-3 space-y-3 overflow-y-auto min-h-[300px] transition-colors duration-200 ${isOver ? 'bg-violet-500/5' : ''}`}>
+              <div className={`flex-1 p-3 space-y-3 overflow-y-auto min-h-[300px] transition-colors duration-200 ${isOver ? 'bg-blue-500/5' : ''}`}>
                 {colCards.map((card) => (
                   <div
                     key={card.id}
                     draggable
                     onDragStart={(e) => onDragStart(e, card.id)}
                     onDragEnd={onDragEnd}
-                    className="group relative rounded-xl bg-gray-800/60 border border-gray-700/50 p-4 hover:border-violet-500/40 hover:shadow-lg hover:shadow-violet-500/10 transition-all duration-200 cursor-grab active:cursor-grabbing active:opacity-70 active:scale-95"
+                    className="group relative rounded-xl bg-gray-800/60 border border-gray-700/50 p-4 hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-200 cursor-grab active:cursor-grabbing active:opacity-70 active:scale-95"
                   >
                     {/* Drag handle visual */}
                     <div className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-40 transition-opacity">
@@ -186,7 +186,7 @@ export function Kanban() {
                     </div>
 
                     <div className="flex items-start justify-between mb-3">
-                      <h4 className="font-medium text-white text-sm leading-snug pr-2 group-hover:text-violet-300 transition-colors">
+                      <h4 className="font-medium text-white text-sm leading-snug pr-2 group-hover:text-blue-300 transition-colors">
                         {card.title}
                       </h4>
                       <div className="relative flex-shrink-0" onClick={(e) => e.stopPropagation()}>
@@ -215,7 +215,7 @@ export function Kanban() {
                     </div>
 
                     <div className="flex items-center gap-2 text-sm text-gray-400 mb-3">
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                         {card.client.charAt(0).toUpperCase()}
                       </div>
                       <span className="truncate">{card.client}</span>
@@ -238,7 +238,7 @@ export function Kanban() {
 
                 {colCards.length === 0 && (
                   <button onClick={() => openNew(col.id)}
-                    className={`w-full text-center py-10 border-2 border-dashed rounded-xl transition-colors text-sm ${isOver ? 'border-violet-500/60 text-violet-400' : 'border-gray-700/50 text-gray-600 hover:border-gray-600 hover:text-gray-500'}`}>
+                    className={`w-full text-center py-10 border-2 border-dashed rounded-xl transition-colors text-sm ${isOver ? 'border-blue-500/60 text-blue-400' : 'border-gray-700/50 text-gray-600 hover:border-gray-600 hover:text-gray-500'}`}>
                     {isOver ? 'Soltar aqui' : '+ Adicionar card'}
                   </button>
                 )}
@@ -255,27 +255,27 @@ export function Kanban() {
             <label className="block text-sm font-medium text-gray-300 mb-1.5">Título *</label>
             <input type="text" value={form.title} onChange={(e) => setField('title', e.target.value)}
               placeholder="Ex: Site Institucional ABC"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all" />
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1.5">Cliente</label>
             <input type="text" value={form.client} onChange={(e) => setField('client', e.target.value)}
               placeholder="Nome do cliente"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all" />
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1.5">Valor (R$)</label>
             <input type="number" min={0} value={form.value} onChange={(e) => setField('value', Number(e.target.value))}
               placeholder="0,00"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all" />
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1.5">Coluna / Status</label>
             <select value={form.status} onChange={(e) => setField('status', e.target.value as KanbanStatus)}
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all">
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all">
               {COLUMNS.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
             </select>
           </div>
@@ -283,13 +283,13 @@ export function Kanban() {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1.5">Prazo</label>
             <input type="date" value={form.dueDate} onChange={(e) => setField('dueDate', e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all" />
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all" />
           </div>
         </div>
 
         <div className="flex gap-3 mt-6 pt-5 border-t border-gray-800">
           <button onClick={closeModal} className="flex-1 px-4 py-2.5 rounded-xl bg-gray-800 text-gray-300 font-medium hover:bg-gray-700 transition-colors">Cancelar</button>
-          <button onClick={handleSave} className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium hover:shadow-lg hover:shadow-violet-500/25 transition-all">
+          <button onClick={handleSave} className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium hover:shadow-lg hover:shadow-blue-500/25 transition-all">
             <Save className="h-4 w-4" />
             {editingCard ? 'Salvar' : 'Criar card'}
           </button>

@@ -144,7 +144,7 @@ export function Financial() {
             <ArrowDownCircle className="h-4 w-4" /> Saída
           </button>
           <button onClick={() => openNew()}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-violet-500/25 transition-all">
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all">
             <Plus className="h-4 w-4" /> Transação
           </button>
         </div>
@@ -170,10 +170,10 @@ export function Financial() {
           <p className="text-sm text-gray-500 mt-2">{entries.filter((e) => e.type === 'expense').length} transações</p>
         </div>
 
-        <div className="rounded-2xl bg-gradient-to-br from-violet-500/10 to-fuchsia-500/5 border border-violet-500/20 p-6">
+        <div className="rounded-2xl bg-gradient-to-br from-blue-500/10 to-cyan-500/5 border border-blue-500/20 p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500"><TrendingUp className="h-6 w-6 text-white" /></div>
-            <span className="text-violet-400 font-medium">Lucro Líquido</span>
+            <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500"><TrendingUp className="h-6 w-6 text-white" /></div>
+            <span className="text-blue-400 font-medium">Lucro Líquido</span>
           </div>
           <p className={`text-3xl font-bold ${netProfit >= 0 ? 'text-white' : 'text-red-400'}`}>{formatCurrency(netProfit)}</p>
           <p className="text-sm text-gray-500 mt-2">
@@ -185,7 +185,7 @@ export function Financial() {
       {/* Expenses by Category */}
       <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-6">
         <div className="flex items-center gap-2 mb-4">
-          <BarChart3 className="h-5 w-5 text-violet-400" />
+          <BarChart3 className="h-5 w-5 text-blue-400" />
           <h3 className="text-lg font-semibold text-white">Despesas por Categoria</h3>
         </div>
         {Object.keys(expensesByCategory).length > 0 ? (
@@ -211,7 +211,7 @@ export function Financial() {
               <button key={f} onClick={() => setFilter(f)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   filter === f
-                    ? f === 'all' ? 'bg-violet-500/20 text-violet-400 border border-violet-500/30'
+                    ? f === 'all' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                       : f === 'income' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                       : 'bg-red-500/20 text-red-400 border border-red-500/30'
                     : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
@@ -236,7 +236,7 @@ export function Financial() {
                 <tr>
                   <td colSpan={7} className="px-6 py-10 text-center text-gray-500">
                     <div className="flex justify-center mb-2">
-                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-violet-500"></div>
+                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-blue-500"></div>
                     </div>
                     Carregando transações...
                   </td>
@@ -265,7 +265,7 @@ export function Financial() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-1">
-                      <button onClick={() => openEdit(entry)} className="p-2 text-gray-400 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-colors" title="Editar">
+                      <button onClick={() => openEdit(entry)} className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors" title="Editar">
                         <Edit2 className="h-4 w-4" />
                       </button>
                       <button onClick={() => setDeleteTarget(entry)} className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors" title="Excluir">
@@ -308,14 +308,14 @@ export function Financial() {
             <label className="block text-sm font-medium text-gray-300 mb-1.5">Descrição *</label>
             <input type="text" value={form.description} onChange={(e) => setField('description', e.target.value)}
               placeholder="Ex: Projeto site ABC / Meta Ads Janeiro"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all" />
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all" />
           </div>
 
           {/* Categoria */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1.5">Categoria</label>
             <select value={form.category} onChange={(e) => setField('category', e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all">
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all">
               {(form.type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES).map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
@@ -327,7 +327,7 @@ export function Financial() {
             <label className="block text-sm font-medium text-gray-300 mb-1.5">Valor (R$) *</label>
             <input type="number" min={0} step={0.01} value={form.value} onChange={(e) => setField('value', Number(e.target.value))}
               placeholder="0,00"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all" />
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all" />
           </div>
 
           {/* Cliente (apenas para entradas) */}
@@ -336,7 +336,7 @@ export function Financial() {
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1.5">Cliente</label>
                 <select value={form.clientId} onChange={(e) => setField('clientId', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all">
+                  className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all">
                   <option value="">Selecione o cliente</option>
                   {clients.map((c) => <option key={c.id} value={c.id}>{c.name} — {c.company}</option>)}
                 </select>
@@ -344,7 +344,7 @@ export function Financial() {
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1.5">Serviço</label>
                 <select value={form.service || ''} onChange={(e) => setField('service', e.target.value as ServiceType || undefined)}
-                  className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all">
+                  className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all">
                   <option value="">Selecione o serviço</option>
                   {Object.entries(SERVICE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                 </select>
@@ -356,13 +356,13 @@ export function Financial() {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1.5">Data</label>
             <input type="date" value={form.date} onChange={(e) => setField('date', e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/40 transition-all" />
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition-all" />
           </div>
         </div>
 
         <div className="flex gap-3 mt-6 pt-5 border-t border-gray-800">
           <button onClick={closeModal} className="flex-1 px-4 py-2.5 rounded-xl bg-gray-800 text-gray-300 font-medium hover:bg-gray-700 transition-colors">Cancelar</button>
-          <button onClick={handleSave} className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium hover:shadow-lg hover:shadow-violet-500/25 transition-all">
+          <button onClick={handleSave} className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium hover:shadow-lg hover:shadow-blue-500/25 transition-all">
             <Save className="h-4 w-4" />
             {editingEntry ? 'Salvar alterações' : 'Adicionar transação'}
           </button>

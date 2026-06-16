@@ -107,7 +107,7 @@ export function ContractSign() {
         <header className="rounded-3xl bg-gradient-to-br from-gray-900 to-gray-900/60 border border-gray-800 p-6 md:p-8 mb-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/15 border border-violet-500/25 text-violet-300 text-xs font-medium mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 border border-blue-500/25 text-blue-300 text-xs font-medium mb-4">
                 <ShieldCheck className="h-4 w-4" /> Link seguro de assinatura digital
               </div>
               <h1 className="text-3xl font-bold">Contrato Digital</h1>
@@ -153,20 +153,20 @@ export function ContractSign() {
             ) : (
               <div className="space-y-5">
                 <div>
-                  <h2 className="text-xl font-bold flex items-center gap-2"><PenLine className="h-5 w-5 text-violet-400" /> Assinar contrato</h2>
+                  <h2 className="text-xl font-bold flex items-center gap-2"><PenLine className="h-5 w-5 text-blue-400" /> Assinar contrato</h2>
                   <p className="text-sm text-gray-400 mt-2">Preencha seus dados e assine no campo abaixo.</p>
                 </div>
                 <label className="flex gap-3 items-start text-sm text-gray-300">
-                  <input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} className="mt-1 accent-violet-500" />
+                  <input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} className="mt-1 accent-blue-500" />
                   <span>Li e aceito os termos do contrato.</span>
                 </label>
                 <div>
                   <label className="block text-sm text-gray-300 mb-1.5">Nome completo</label>
-                  <input value={signedName} onChange={(e) => setSignedName(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-violet-500" />
+                  <input value={signedName} onChange={(e) => setSignedName(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="block text-sm text-gray-300 mb-1.5">CPF ou CNPJ</label>
-                  <input value={signedDocument} onChange={(e) => setSignedDocument(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-violet-500" />
+                  <input value={signedDocument} onChange={(e) => setSignedDocument(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-blue-500" />
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
@@ -185,7 +185,7 @@ export function ContractSign() {
                 <button
                   onClick={handleSign}
                   disabled={!accepted || !signedName.trim() || !signedDocument.trim() || !signatureData}
-                  className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-bold disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-violet-500/25 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-blue-500/25 transition-all"
                 >
                   Assinar contrato
                 </button>

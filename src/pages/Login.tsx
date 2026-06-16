@@ -26,15 +26,15 @@ export function Login() {
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 text-gray-100 relative overflow-hidden">
       {/* Background decorations */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-violet-500/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/20 blur-[120px] rounded-full pointer-events-none" />
       
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="flex flex-col items-center justify-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 shadow-xl shadow-violet-500/25 mb-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-xl shadow-blue-500/25 mb-4">
             <Sparkles className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-            AgencyCRM
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            RIA Studio
           </h1>
           <p className="text-sm text-gray-500 mt-1">AI & Digital Agency</p>
         </div>
@@ -43,7 +43,7 @@ export function Login() {
         </h2>
         <p className="mt-2 text-center text-sm text-gray-400">
           Ou{' '}
-          <Link to="/register" className="font-medium text-violet-400 hover:text-violet-300 transition-colors">
+          <Link to="/register" className="font-medium text-blue-400 hover:text-blue-300 transition-colors">
             crie uma nova conta grátis
           </Link>
         </p>
@@ -65,7 +65,7 @@ export function Login() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 bg-gray-950/50 border border-gray-800 text-white rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 sm:text-sm transition-colors"
+                  className="block w-full pl-10 bg-gray-950/50 border border-gray-800 text-white rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
                   placeholder="seu@email.com"
                 />
               </div>
@@ -84,7 +84,7 @@ export function Login() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 bg-gray-950/50 border border-gray-800 text-white rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 sm:text-sm transition-colors"
+                  className="block w-full pl-10 bg-gray-950/50 border border-gray-800 text-white rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
                   placeholder="••••••••"
                 />
               </div>
@@ -94,7 +94,7 @@ export function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 focus:ring-offset-gray-900 disabled:opacity-50 transition-all duration-200"
+                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-gray-900 disabled:opacity-50 transition-all duration-200"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Entrar na plataforma'}
               </button>

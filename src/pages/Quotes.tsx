@@ -162,7 +162,7 @@ export function Quotes() {
           <h1 className="text-3xl font-bold text-white">Orçamentos</h1>
           <p className="text-gray-400 mt-1">Crie orçamentos e gere contratos digitais quando forem aprovados.</p>
         </div>
-        <button onClick={openNew} className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-violet-500/25 transition-all">
+        <button onClick={openNew} className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all">
           <Plus className="h-5 w-5" /> Novo Orçamento
         </button>
       </div>
@@ -170,15 +170,15 @@ export function Quotes() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="rounded-2xl bg-gray-900/60 border border-gray-800 p-5"><p className="text-sm text-gray-500">Total em orçamento</p><p className="text-2xl font-bold text-white">{formatCurrency(quotes.reduce((s, q) => s + q.totalValue, 0))}</p></div>
         <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-5"><p className="text-sm text-emerald-400">Aprovados/Fechados</p><p className="text-2xl font-bold text-emerald-400">{formatCurrency(totalClosed)}</p></div>
-        <div className="rounded-2xl bg-violet-500/10 border border-violet-500/20 p-5"><p className="text-sm text-violet-400">Conversão</p><p className="text-2xl font-bold text-white">{quotes.length ? Math.round((quotes.filter(q => ['aprovado', 'fechado'].includes(q.status)).length / quotes.length) * 100) : 0}%</p></div>
+        <div className="rounded-2xl bg-blue-500/10 border border-blue-500/20 p-5"><p className="text-sm text-blue-400">Conversão</p><p className="text-2xl font-bold text-white">{quotes.length ? Math.round((quotes.filter(q => ['aprovado', 'fechado'].includes(q.status)).length / quotes.length) * 100) : 0}%</p></div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar orçamento..." className="w-full pl-12 pr-4 py-3 bg-gray-900/50 border border-gray-800 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500/50" />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar orçamento..." className="w-full pl-12 pr-4 py-3 bg-gray-900/50 border border-gray-800 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50" />
         </div>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-4 py-3 bg-gray-900/50 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-violet-500/50">
+        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-4 py-3 bg-gray-900/50 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-blue-500/50">
           <option value="all">Todos status</option>
           {Object.entries(QUOTE_STATUS_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
         </select>
@@ -186,7 +186,7 @@ export function Quotes() {
 
       {loading ? (
         <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-violet-500"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : (
       <div className="space-y-4">
@@ -198,7 +198,7 @@ export function Quotes() {
                   <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(q.status === 'fechado' || q.status === 'aprovado' ? 'finalizado' : 'orcamento')}`}>{QUOTE_STATUS_LABELS[q.status]}</span>
                   <span className="text-xs text-gray-500">{formatDate(q.createdAt)}</span>
                 </div>
-                <h3 className="text-xl font-bold text-white flex items-center gap-2"><FileText className="h-5 w-5 text-violet-400" />{q.title}</h3>
+                <h3 className="text-xl font-bold text-white flex items-center gap-2"><FileText className="h-5 w-5 text-blue-400" />{q.title}</h3>
                 <p className="text-gray-400 mt-1 line-clamp-2">{q.description}</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 text-sm">
                   <div><p className="text-gray-500">Cliente</p><p className="text-white font-medium">{q.clientName}</p></div>
@@ -210,7 +210,7 @@ export function Quotes() {
               <div className="flex flex-col gap-3 min-w-[280px]">
                 <div className="flex flex-wrap justify-end gap-2">
                   {!['aprovado', 'fechado'].includes(q.status) && <button onClick={() => markClosed(q)} className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 text-sm"><CheckCircle className="h-4 w-4"/> Marcar fechado</button>}
-                  <button onClick={() => openEdit(q)} className="p-2 rounded-lg bg-gray-800 text-gray-300 hover:text-violet-400"><Edit2 className="h-4 w-4"/></button>
+                  <button onClick={() => openEdit(q)} className="p-2 rounded-lg bg-gray-800 text-gray-300 hover:text-blue-400"><Edit2 className="h-4 w-4"/></button>
                   <button onClick={() => setDeleteTarget(q)} className="p-2 rounded-lg bg-gray-800 text-gray-300 hover:text-red-400"><Trash2 className="h-4 w-4"/></button>
                 </div>
                 {['aprovado', 'fechado'].includes(q.status) && <ContractManager quote={q} compact />}
@@ -250,7 +250,7 @@ export function Quotes() {
         </div>
         <div className="flex gap-3 mt-6 pt-5 border-t border-gray-800">
           <button onClick={() => setModalOpen(false)} className="flex-1 px-4 py-2.5 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700">Cancelar</button>
-          <button onClick={save} className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-semibold">Salvar orçamento</button>
+          <button onClick={save} className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold">Salvar orçamento</button>
         </div>
       </Modal>
 

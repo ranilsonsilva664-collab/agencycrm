@@ -92,7 +92,7 @@ export function Dashboard() {
         value: faturamento,
         change: 0,
         icon: DollarSign,
-        color: 'from-violet-500 to-fuchsia-500',
+        color: 'from-blue-500 to-cyan-500',
       },
       {
         title: 'Gastos Mensais',
@@ -226,7 +226,7 @@ export function Dashboard() {
         {metricCards.map((metric) => (
           <div
             key={metric.title}
-            className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-5 hover:border-gray-700/50 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/10"
+            className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-5 hover:border-gray-700/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10"
           >
             <div className={`absolute -right-6 -top-6 h-24 w-24 rounded-full bg-gradient-to-br ${metric.color} opacity-10 blur-2xl group-hover:opacity-20 transition-opacity`} />
             <div className="relative">
@@ -407,7 +407,7 @@ export function Dashboard() {
       <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/50 border border-gray-800/50 p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-white">Atividade Recente (Últimos Projetos)</h3>
-          <a href="/projetos" className="text-sm text-violet-400 hover:text-violet-300 transition-colors font-medium">
+          <a href="/projetos" className="text-sm text-blue-400 hover:text-blue-300 transition-colors font-medium">
             Ver todos →
           </a>
         </div>
@@ -415,7 +415,7 @@ export function Dashboard() {
           {recentProjects.length > 0 ? recentProjects.map((project) => (
             <div
               key={project.id}
-              className="flex items-center justify-between p-4 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:bg-gray-800/50 hover:border-violet-500/20 transition-all cursor-pointer"
+              className="flex items-center justify-between p-4 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:bg-gray-800/50 hover:border-blue-500/20 transition-all cursor-pointer"
             >
               <div className="flex items-center gap-4">
                 <div

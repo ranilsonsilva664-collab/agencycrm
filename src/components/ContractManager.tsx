@@ -116,7 +116,7 @@ export function ContractManager({ client, project, quote, compact = false }: Con
       {!contract ? (
         <button
           onClick={generateContract}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-semibold hover:shadow-lg hover:shadow-violet-500/20 transition-all"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/20 transition-all"
         >
           <FileSignature className="h-4 w-4" />
           Gerar Contrato Digital
@@ -133,7 +133,7 @@ export function ContractManager({ client, project, quote, compact = false }: Con
               <Eye className="h-4 w-4" /> Visualizar contrato
             </button>
             {contract.status !== 'assinado' && (
-              <button onClick={() => { setContractText(contract.contractText); setEditOpen(true); }} className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-violet-500/15 text-violet-300 hover:bg-violet-500/25 transition-colors text-sm">
+              <button onClick={() => { setContractText(contract.contractText); setEditOpen(true); }} className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-500/15 text-blue-300 hover:bg-blue-500/25 transition-colors text-sm">
                 <PenLine className="h-4 w-4" /> Editar contrato
               </button>
             )}
@@ -174,11 +174,11 @@ export function ContractManager({ client, project, quote, compact = false }: Con
           value={contractText}
           onChange={(e) => setContractText(e.target.value)}
           disabled={contract?.status === 'assinado'}
-          className="w-full min-h-[520px] bg-gray-800/70 border border-gray-700 rounded-xl text-gray-100 p-4 font-mono text-sm leading-relaxed focus:outline-none focus:border-violet-500 resize-y disabled:opacity-60"
+          className="w-full min-h-[520px] bg-gray-800/70 border border-gray-700 rounded-xl text-gray-100 p-4 font-mono text-sm leading-relaxed focus:outline-none focus:border-blue-500 resize-y disabled:opacity-60"
         />
         <div className="flex gap-3 mt-5 pt-4 border-t border-gray-800">
           <button onClick={() => setEditOpen(false)} className="flex-1 px-4 py-2.5 rounded-xl bg-gray-800 text-gray-200 hover:bg-gray-700 transition-colors">Cancelar</button>
-          <button onClick={saveText} disabled={contract?.status === 'assinado'} className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-semibold disabled:opacity-50">Salvar contrato</button>
+          <button onClick={saveText} disabled={contract?.status === 'assinado'} className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold disabled:opacity-50">Salvar contrato</button>
         </div>
       </Modal>
 

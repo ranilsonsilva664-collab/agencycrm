@@ -145,7 +145,7 @@ export function Traffic() {
           <p className="text-gray-400 mt-1">Gestão de campanhas, investimento e retorno</p>
         </div>
         <button onClick={openNew}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-violet-500/25 transition-all">
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all">
           <Plus className="h-5 w-5" /> Nova Campanha
         </button>
       </div>
@@ -199,7 +199,7 @@ export function Traffic() {
         {/* Leads e clientes */}
         <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/60 border border-gray-800/50 p-5">
           <div className="flex items-center gap-2 mb-3">
-            <div className="p-2.5 rounded-xl bg-violet-500/20"><Users className="h-5 w-5 text-violet-400" /></div>
+            <div className="p-2.5 rounded-xl bg-blue-500/20"><Users className="h-5 w-5 text-blue-400" /></div>
             <span className="text-sm text-gray-400 font-medium">Conversões</span>
           </div>
           <div className="flex items-end gap-4">
@@ -208,13 +208,13 @@ export function Traffic() {
               <p className="text-xs text-gray-500">leads</p>
             </div>
             <div className="pb-0.5">
-              <p className="text-xl font-bold text-violet-400">{totalClients}</p>
+              <p className="text-xl font-bold text-blue-400">{totalClients}</p>
               <p className="text-xs text-gray-500">clientes</p>
             </div>
           </div>
           <div className="mt-2 flex items-center gap-2">
             <span className="text-xs text-gray-500">Taxa de conversão:</span>
-            <span className="text-xs font-bold text-violet-400">{conversionRate.toFixed(1)}%</span>
+            <span className="text-xs font-bold text-blue-400">{conversionRate.toFixed(1)}%</span>
           </div>
         </div>
       </div>
@@ -260,7 +260,7 @@ export function Traffic() {
                 <tr>
                   <td colSpan={12} className="px-4 py-10 text-center text-gray-500">
                     <div className="flex justify-center mb-2">
-                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-violet-500"></div>
+                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-blue-500"></div>
                     </div>
                     Carregando campanhas...
                   </td>
@@ -327,7 +327,7 @@ export function Traffic() {
                     <td className="px-4 py-4 text-white text-sm font-medium">{campaign.leadsGenerated}</td>
 
                     {/* Clientes */}
-                    <td className="px-4 py-4 text-violet-400 text-sm font-bold">{campaign.clientsClosed}</td>
+                    <td className="px-4 py-4 text-blue-400 text-sm font-bold">{campaign.clientsClosed}</td>
 
                     {/* CPL */}
                     <td className="px-4 py-4 text-gray-300 text-sm whitespace-nowrap">{formatCurrency(cpl)}</td>
@@ -342,7 +342,7 @@ export function Traffic() {
                     <td className="px-4 py-4">
                       <div className="flex items-center justify-end gap-1">
                         <button onClick={() => openEdit(campaign)}
-                          className="p-2 text-gray-400 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-colors" title="Editar">
+                          className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors" title="Editar">
                           <Edit2 className="h-4 w-4" />
                         </button>
                         <button onClick={() => setDeleteTarget(campaign)}
@@ -379,7 +379,7 @@ export function Traffic() {
                   </td>
                   <td className="px-4 py-3"><RoiBadge roi={overallROI} /></td>
                   <td className="px-4 py-3 text-sm font-bold text-white">{totalLeads}</td>
-                  <td className="px-4 py-3 text-sm font-bold text-violet-400">{totalClients}</td>
+                  <td className="px-4 py-3 text-sm font-bold text-blue-400">{totalClients}</td>
                   <td className="px-4 py-3 text-sm text-gray-300">{formatCurrency(avgCPL)}</td>
                   <td className="px-4 py-3 text-sm text-gray-300">{formatCurrency(avgCPC)}</td>
                   <td colSpan={2} />
@@ -407,20 +407,20 @@ export function Traffic() {
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1.5">Plataforma</label>
               <select value={form.platform} onChange={e => setField('platform', e.target.value as TrafficPlatform)}
-                className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 transition-all">
+                className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 transition-all">
                 {Object.entries(TRAFFIC_PLATFORM_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1.5">Data</label>
               <input type="date" value={form.date} onChange={e => setField('date', e.target.value)}
-                className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-violet-500 transition-all" />
+                className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 transition-all" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1.5">Objetivo</label>
               <input type="text" value={form.objective} onChange={e => setField('objective', e.target.value)}
                 placeholder="Ex: Leads, Conversão, Alcance"
-                className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 transition-all" />
+                className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all" />
             </div>
           </div>
 
@@ -429,7 +429,7 @@ export function Traffic() {
             <label className="block text-sm font-medium text-gray-300 mb-1.5">Nome da campanha *</label>
             <input type="text" value={form.campaignName} onChange={e => setField('campaignName', e.target.value)}
               placeholder="Ex: Leads Sites Janeiro"
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 transition-all" />
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all" />
           </div>
 
           {/* Linha financeira */}
@@ -555,14 +555,14 @@ export function Traffic() {
               <input type="number" min={0} value={form.leadsGenerated || ''}
                 onChange={e => setField('leadsGenerated', Number(e.target.value))}
                 placeholder="0"
-                className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 transition-all" />
+                className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1.5">🤝 Clientes Fechados</label>
               <input type="number" min={0} value={form.clientsClosed || ''}
                 onChange={e => setField('clientsClosed', Number(e.target.value))}
                 placeholder="0"
-                className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 transition-all" />
+                className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all" />
             </div>
           </div>
 
@@ -572,7 +572,7 @@ export function Traffic() {
             <textarea rows={2} value={form.observations}
               onChange={e => setField('observations', e.target.value)}
               placeholder="Notas sobre esta campanha..."
-              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 transition-all resize-none" />
+              className="w-full px-4 py-2.5 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all resize-none" />
           </div>
         </div>
 
@@ -582,7 +582,7 @@ export function Traffic() {
             Cancelar
           </button>
           <button onClick={handleSave}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-medium hover:shadow-lg hover:shadow-violet-500/25 transition-all">
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium hover:shadow-lg hover:shadow-blue-500/25 transition-all">
             <Save className="h-4 w-4" />
             {editingCampaign ? 'Salvar alterações' : 'Cadastrar campanha'}
           </button>

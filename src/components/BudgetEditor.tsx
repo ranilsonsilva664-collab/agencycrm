@@ -148,22 +148,22 @@ export function BudgetEditor({ client, project, open, onClose }: BudgetEditorPro
       <div className="space-y-5">
 
         {/* Header info */}
-        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 rounded-xl bg-violet-500/10 border border-violet-500/20">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
           <div className="flex flex-wrap items-center gap-4">
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-violet-400/70 font-medium">Nº Orçamento</p>
+              <p className="text-[10px] uppercase tracking-wider text-blue-400/70 font-medium">Nº Orçamento</p>
               <p className="text-sm font-bold text-white">{budgetNumber}</p>
             </div>
-            <div className="w-px h-6 bg-violet-500/20 hidden sm:block" />
+            <div className="w-px h-6 bg-blue-500/20 hidden sm:block" />
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-violet-400/70 font-medium">Cliente</p>
+              <p className="text-[10px] uppercase tracking-wider text-blue-400/70 font-medium">Cliente</p>
               <p className="text-sm font-medium text-white">{target.name}</p>
             </div>
             {target.company && (
               <>
-                <div className="w-px h-6 bg-violet-500/20 hidden sm:block" />
+                <div className="w-px h-6 bg-blue-500/20 hidden sm:block" />
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-violet-400/70 font-medium">Empresa</p>
+                  <p className="text-[10px] uppercase tracking-wider text-blue-400/70 font-medium">Empresa</p>
                   <p className="text-sm font-medium text-white">{target.company}</p>
                 </div>
               </>
@@ -178,7 +178,7 @@ export function BudgetEditor({ client, project, open, onClose }: BudgetEditorPro
         {/* Info chips */}
         <div className="flex flex-wrap gap-2">
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-800/60 border border-gray-700/50 text-sm text-gray-300">
-            <FileText className="h-3.5 w-3.5 text-violet-400" />
+            <FileText className="h-3.5 w-3.5 text-blue-400" />
             {SERVICE_LABELS[target.service as keyof typeof SERVICE_LABELS] || target.service}
           </span>
           {project && (
@@ -207,7 +207,7 @@ export function BudgetEditor({ client, project, open, onClose }: BudgetEditorPro
             </label>
             <button
               onClick={() => { setMessage(defaultMessage); setCopied(false); setShowCopyFallback(false); }}
-              className="text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium"
+              className="text-xs text-blue-400 hover:text-blue-300 transition-colors font-medium"
             >
               ↻ Resetar
             </button>
@@ -238,7 +238,7 @@ export function BudgetEditor({ client, project, open, onClose }: BudgetEditorPro
             <div className="mt-3">
               <div className="bg-[#0b141a] rounded-2xl overflow-hidden border border-gray-700/50 max-w-sm">
                 <div className="bg-[#1f2c34] px-4 py-3 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-xs font-bold">
                     {target.name.charAt(0).toUpperCase()}
                   </div>
                   <div>

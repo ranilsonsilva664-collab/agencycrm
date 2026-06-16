@@ -24,12 +24,12 @@ function Toast({ toast, onRemove }: ToastProps) {
   const styles: Record<ToastType, string> = {
     success: 'border-emerald-500/40 bg-emerald-500/10',
     error: 'border-red-500/40 bg-red-500/10',
-    info: 'border-violet-500/40 bg-violet-500/10',
+    info: 'border-blue-500/40 bg-blue-500/10',
   };
   const icons: Record<ToastType, React.ReactNode> = {
     success: <CheckCircle className="h-5 w-5 text-emerald-400 flex-shrink-0" />,
     error: <XCircle className="h-5 w-5 text-red-400 flex-shrink-0" />,
-    info: <Info className="h-5 w-5 text-violet-400 flex-shrink-0" />,
+    info: <Info className="h-5 w-5 text-blue-400 flex-shrink-0" />,
   };
 
   return (
