@@ -151,7 +151,7 @@ export function Traffic() {
       </div>
 
       {/* ── Cards de resumo ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
         {/* Investido */}
         <div className="rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900/60 border border-gray-800/50 p-5">
@@ -159,8 +159,8 @@ export function Traffic() {
             <div className="p-2.5 rounded-xl bg-red-500/20"><DollarSign className="h-5 w-5 text-red-400" /></div>
             <span className="text-sm text-gray-400 font-medium">Total Investido</span>
           </div>
-          <p className="text-2xl font-bold text-white">{formatCurrency(totalInvested)}</p>
-          <p className="text-xs text-gray-500 mt-1">{campaigns.length} campanha{campaigns.length !== 1 ? 's' : ''}</p>
+          <p className="text-2xl font-bold text-white truncate" title={formatCurrency(totalInvested)}>{formatCurrency(totalInvested)}</p>
+          <p className="text-xs text-gray-500 mt-1 truncate">{campaigns.length} campanha{campaigns.length !== 1 ? 's' : ''}</p>
           <ProgressBar value={totalInvested} max={totalRevenue} color="bg-red-500" />
         </div>
 
@@ -170,8 +170,8 @@ export function Traffic() {
             <div className="p-2.5 rounded-xl bg-emerald-500/20"><BarChart2 className="h-5 w-5 text-emerald-400" /></div>
             <span className="text-sm text-gray-400 font-medium">Faturamento</span>
           </div>
-          <p className="text-2xl font-bold text-white">{formatCurrency(totalRevenue)}</p>
-          <p className="text-xs text-gray-500 mt-1">receita gerada pelos anúncios</p>
+          <p className="text-2xl font-bold text-white truncate" title={formatCurrency(totalRevenue)}>{formatCurrency(totalRevenue)}</p>
+          <p className="text-xs text-gray-500 mt-1 truncate" title="receita gerada pelos anúncios">receita gerada pelos anúncios</p>
           <ProgressBar value={totalRevenue} max={totalRevenue} color="bg-emerald-500" />
         </div>
 
@@ -187,7 +187,7 @@ export function Traffic() {
             </div>
             <span className="text-sm text-gray-400 font-medium">Lucro Líquido</span>
           </div>
-          <p className={`text-2xl font-bold ${totalProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+          <p className={`text-2xl font-bold truncate ${totalProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}`} title={formatCurrency(totalProfit)}>
             {formatCurrency(totalProfit)}
           </p>
           <div className="flex items-center gap-1 mt-1">
@@ -203,13 +203,13 @@ export function Traffic() {
             <span className="text-sm text-gray-400 font-medium">Conversões</span>
           </div>
           <div className="flex items-end gap-4">
-            <div>
-              <p className="text-2xl font-bold text-white">{totalLeads}</p>
-              <p className="text-xs text-gray-500">leads</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-2xl font-bold text-white truncate">{totalLeads}</p>
+              <p className="text-xs text-gray-500 truncate">leads</p>
             </div>
-            <div className="pb-0.5">
-              <p className="text-xl font-bold text-blue-400">{totalClients}</p>
-              <p className="text-xs text-gray-500">clientes</p>
+            <div className="pb-0.5 min-w-0 flex-1">
+              <p className="text-xl font-bold text-blue-400 truncate">{totalClients}</p>
+              <p className="text-xs text-gray-500 truncate">clientes</p>
             </div>
           </div>
           <div className="mt-2 flex items-center gap-2">
@@ -220,7 +220,7 @@ export function Traffic() {
       </div>
 
       {/* ── Métricas secundárias ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: 'CPL Médio', value: formatCurrency(avgCPL), desc: 'custo por lead', icon: Target, color: 'text-cyan-400', bg: 'bg-cyan-500/10 border-cyan-500/20' },
           { label: 'CPC Médio', value: formatCurrency(avgCPC), desc: 'custo por cliente', icon: Users, color: 'text-purple-400', bg: 'bg-purple-500/10 border-purple-500/20' },
@@ -229,11 +229,11 @@ export function Traffic() {
         ].map((m) => (
           <div key={m.label} className={`rounded-xl border p-4 ${m.bg}`}>
             <div className="flex items-center gap-2 mb-2">
-              <m.icon className={`h-4 w-4 ${m.color}`} />
-              <span className="text-xs text-gray-400 font-medium">{m.label}</span>
+              <m.icon className={`h-4 w-4 flex-shrink-0 ${m.color}`} />
+              <span className="text-xs text-gray-400 font-medium truncate" title={m.label}>{m.label}</span>
             </div>
-            <p className={`text-xl font-bold ${m.color}`}>{m.value}</p>
-            <p className="text-xs text-gray-500 mt-0.5">{m.desc}</p>
+            <p className={`text-xl font-bold truncate ${m.color}`} title={m.value}>{m.value}</p>
+            <p className="text-xs text-gray-500 mt-0.5 truncate" title={m.desc}>{m.desc}</p>
           </div>
         ))}
       </div>
