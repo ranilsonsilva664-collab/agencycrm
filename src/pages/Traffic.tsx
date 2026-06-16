@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import {
   Plus, TrendingUp, Target, Users, DollarSign,
   ArrowUpRight, ArrowDownRight, Save, Edit2, Trash2,
-  Zap, BarChart2, Percent, AlertCircle,
+  Zap, BarChart2, Percent, AlertCircle, Wand2
 } from 'lucide-react';
 import {
   formatCurrency, formatDate,
@@ -16,6 +16,7 @@ import { Modal } from '../components/Modal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ToastContainer } from '../components/Toast';
 import { useToast } from '../hooks/useToast';
+import { parseAIReport } from '../utils/aiParser';
 
 const emptyCampaign = (): Omit<TrafficCampaign, 'id' | 'createdAt'> => ({
   date: new Date().toISOString().split('T')[0],
@@ -61,6 +62,8 @@ export function Traffic() {
   const [editingCampaign, setEditingCampaign] = useState<TrafficCampaign | null>(null);
   const [form, setForm] = useState(emptyCampaign());
   const [deleteTarget, setDeleteTarget] = useState<TrafficCampaign | null>(null);
+  const [inputMode, setInputMode] = useState<'manual' | 'ai'>('manual');
+  const [aiText, setAiText] = useState('');
   const { toasts, removeToast, success, error } = useToast();
 
   /* ─── Totais globais ─── */
@@ -85,7 +88,13 @@ export function Traffic() {
   const maxInvested = useMemo(() => Math.max(...campaigns.map(c => c.investedValue), 1), [campaigns]);
 
   /* ─── Handlers ─── */
-  function openNew()  { setEditingCampaign(null); setForm(emptyCampaign()); setModalOpen(true); }
+  function openNew()  { 
+    setEditingCampaign(null); 
+    setForm(emptyCampaign()); 
+    setInputMode('manual');
+    setAiText('');
+    setModalOpen(true); 
+  }
 
   function openEdit(c: TrafficCampaign) {
     setEditingCampaign(c);
@@ -95,10 +104,26 @@ export function Traffic() {
       leadsGenerated: c.leadsGenerated, clientsClosed: c.clientsClosed,
       revenueGenerated: c.revenueGenerated, observations: c.observations,
     });
+    setInputMode('manual');
     setModalOpen(true);
   }
 
   function closeModal() { setModalOpen(false); setEditingCampaign(null); }
+
+  function handleAiParse() {
+    if (!aiText.trim()) return;
+    const result = parseAIReport(aiText);
+    setForm(prev => ({
+      ...prev,
+      campaignName: result.campaignName || prev.campaignName,
+      investedValue: result.investedValue || prev.investedValue,
+      revenueGenerated: result.revenueGenerated || prev.revenueGenerated,
+      leadsGenerated: result.leadsGenerated || prev.leadsGenerated,
+      clientsClosed: result.clientsClosed || prev.clientsClosed,
+    }));
+    setInputMode('manual');
+    success('Dados importados com sucesso! Revise antes de salvar.');
+  }
 
   function setField<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -400,6 +425,51 @@ export function Traffic() {
 
       {/* ── Modal Nova / Editar Campanha ── */}
       <Modal open={modalOpen} onClose={closeModal} title={editingCampaign ? 'Editar Campanha' : 'Nova Campanha'} size="xl">
+        {!editingCampaign && (
+          <div className="flex bg-gray-800/50 p-1 rounded-xl mb-6 border border-gray-700/50">
+            <button
+              onClick={() => setInputMode('manual')}
+              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
+                inputMode === 'manual' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Preenchimento Manual
+            </button>
+            <button
+              onClick={() => setInputMode('ai')}
+              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-2 ${
+                inputMode === 'ai' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <Wand2 className="h-4 w-4" /> Importar de IA
+            </button>
+          </div>
+        )}
+
+        {inputMode === 'ai' ? (
+          <div className="space-y-4">
+            <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 text-sm text-blue-400 mb-4">
+              Cole abaixo o relatório gerado pela Inteligência Artificial. O sistema irá extrair automaticamente os valores de investimento, faturamento, leads e clientes fechados.
+            </div>
+            <textarea
+              value={aiText}
+              onChange={(e) => setAiText(e.target.value)}
+              placeholder="Cole o texto do relatório aqui..."
+              className="w-full h-64 px-4 py-3 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all resize-none"
+            />
+            <div className="flex gap-3 pt-4 border-t border-gray-800">
+              <button onClick={() => setInputMode('manual')}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-gray-800 text-gray-300 font-medium hover:bg-gray-700 transition-colors">
+                Cancelar
+              </button>
+              <button onClick={handleAiParse}
+                className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium hover:shadow-lg hover:shadow-blue-500/25 transition-all">
+                <Wand2 className="h-4 w-4" />
+                Extrair Dados
+              </button>
+            </div>
+          </div>
+        ) : (
         <div className="space-y-6">
 
           {/* Linha 1 — Plataforma + Data + Nome */}
@@ -587,6 +657,7 @@ export function Traffic() {
             {editingCampaign ? 'Salvar alterações' : 'Cadastrar campanha'}
           </button>
         </div>
+        )}
       </Modal>
 
       {/* Delete confirm */}
