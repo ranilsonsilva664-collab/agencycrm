@@ -2,8 +2,10 @@ import { useState, useMemo } from 'react';
 import {
   Plus, TrendingUp, Target, Users, DollarSign,
   ArrowUpRight, ArrowDownRight, Save, Edit2, Trash2,
-  Zap, BarChart2, Percent, AlertCircle, Wand2
+  Zap, BarChart2, Percent, AlertCircle, Wand2,
+  Image as ImageIcon, Upload, Loader2
 } from 'lucide-react';
+import Tesseract from 'tesseract.js';
 import {
   formatCurrency, formatDate,
   calculateROI, calculateCPL, calculateCPC,
@@ -64,6 +66,7 @@ export function Traffic() {
   const [deleteTarget, setDeleteTarget] = useState<TrafficCampaign | null>(null);
   const [inputMode, setInputMode] = useState<'manual' | 'ai'>('manual');
   const [aiText, setAiText] = useState('');
+  const [isExtractingImage, setIsExtractingImage] = useState(false);
   const { toasts, removeToast, success, error } = useToast();
 
   /* ─── Totais globais ─── */
@@ -109,6 +112,25 @@ export function Traffic() {
   }
 
   function closeModal() { setModalOpen(false); setEditingCampaign(null); }
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsExtractingImage(true);
+    try {
+      const result = await Tesseract.recognize(file, 'por');
+      const extractedText = result.data.text;
+      setAiText(prev => prev ? prev + '\n\n' + extractedText : extractedText);
+      success('Texto extraído da imagem com sucesso!');
+    } catch (err) {
+      error('Erro ao ler a imagem. Tente novamente.');
+    } finally {
+      setIsExtractingImage(false);
+      if (e.target) {
+        e.target.value = '';
+      }
+    }
+  }
 
   function handleAiParse() {
     if (!aiText.trim()) return;
@@ -449,13 +471,40 @@ export function Traffic() {
         {inputMode === 'ai' ? (
           <div className="space-y-4">
             <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 text-sm text-blue-400 mb-4">
-              Cole abaixo o relatório gerado pela Inteligência Artificial. O sistema irá extrair automaticamente os valores de investimento, faturamento, leads e clientes fechados.
+              Cole abaixo o relatório gerado pela Inteligência Artificial ou faça o upload de um print. O sistema irá extrair automaticamente os valores de investimento, faturamento, leads e clientes fechados.
             </div>
+
+            <div className="flex gap-4 items-center">
+              <label className="flex-1 flex flex-col items-center justify-center gap-2 px-4 py-8 border-2 border-dashed border-gray-700 hover:border-blue-500 rounded-xl bg-gray-800/40 cursor-pointer transition-colors relative overflow-hidden group">
+                <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={isExtractingImage} />
+                {isExtractingImage ? (
+                  <>
+                    <Loader2 className="h-8 w-8 text-blue-400 animate-spin" />
+                    <span className="text-sm font-medium text-blue-400">Extraindo texto da imagem...</span>
+                  </>
+                ) : (
+                  <>
+                    <div className="p-3 bg-gray-800 rounded-full group-hover:bg-blue-500/20 transition-colors">
+                      <ImageIcon className="h-6 w-6 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                    </div>
+                    <div className="text-center">
+                      <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors block">
+                        Fazer upload de um print (imagem)
+                      </span>
+                      <span className="text-xs text-gray-500 mt-1 block">
+                        PNG, JPG, JPEG
+                      </span>
+                    </div>
+                  </>
+                )}
+              </label>
+            </div>
+
             <textarea
               value={aiText}
               onChange={(e) => setAiText(e.target.value)}
               placeholder="Cole o texto do relatório aqui..."
-              className="w-full h-64 px-4 py-3 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all resize-none"
+              className="w-full h-40 px-4 py-3 bg-gray-800/60 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all resize-none"
             />
             <div className="flex gap-3 pt-4 border-t border-gray-800">
               <button onClick={() => setInputMode('manual')}
